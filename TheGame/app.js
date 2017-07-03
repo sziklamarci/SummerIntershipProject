@@ -12,10 +12,16 @@ console.log("Server started.");
 
 var SOCKET_LIST = {};
 
-var Entity = function(){
+var WIDTH = 800;
+var HEIGHT = 500;
+
+var Size = 20;
+
+var Entity = function(size){
 	var self = {
-		x:250,
-		y:250,
+		x:Math.random()*WIDTH,
+		y:Math.random()*HEIGHT,
+		size:size,
 		spdX:0,
 		spdY:0,
 		id:"",
@@ -33,8 +39,74 @@ var Entity = function(){
 	return self;
 }
 
+testCollisionRectRect = function(rect1,rect2){
+	return rect1.x <= rect2.x+rect2.width 
+		&& rect2.x <= rect1.x+rect1.width
+		&& rect1.y <= rect2.y + rect2.height
+		&& rect2.y <= rect1.y + rect1.height;
+}
+
+var Wall = function(){
+	var self = Entity(10);
+	self.id = Math.random();
+	self.width = Math.floor(2+Math.random()*50);
+	self.height = Math.floor(2+Math.random()*50);
+	
+	var super_update = self.update;
+	self.update = function(){
+		self.collision();
+		super_update();
+	}
+	self.collision = function (){
+		for(var i in Player.list){
+			var p = Player.list[i];
+			var rect1 = {
+				x:self.x-self.width/2,
+				y:self.y-self.height/2,
+				width:self.width,
+				height:self.height,
+			}
+			var rect2 = {
+				x:Player.list[i].x-Player.list[i].size/2,
+				y:Player.list[i].y-Player.list[i].size/2,
+				width:Player.list[i].size,
+				height:Player.list[i].size,
+			}
+			if (testCollisionRectRect(rect1,rect2) && Player.list[i].pressingRight)
+				Player.list[i].x -= Player.list[i].size/2;
+			if (testCollisionRectRect(rect1,rect2) && Player.list[i].pressingLeft)
+				Player.list[i].x += Player.list[i].size/2;
+			if (testCollisionRectRect(rect1,rect2) && Player.list[i].pressingDown)
+				Player.list[i].y -= Player.list[i].size/2;
+			if (testCollisionRectRect(rect1,rect2) && Player.list[i].pressingUp)
+				Player.list[i].y += Player.list[i].size/2;
+		}
+		for(var i in Bullet.list){
+			var b = Bullet.list[i];
+			var rect1 = {
+				x:self.x-self.width/2,
+				y:self.y-self.height/2,
+				width:self.width,
+				height:self.height,
+			}
+			var rect2 = {
+				x:Bullet.list[i].x-Bullet.list[i].size/2,
+				y:Bullet.list[i].y-Bullet.list[i].size/2,
+				width:Bullet.list[i].size,
+				height:Bullet.list[i].size,
+			}
+			if (testCollisionRectRect(rect1,rect2))
+				Bullet.list[i].toRemove=true;
+		}
+	}
+	
+	Wall.list[self.id] = self;
+	return self;
+}
+Wall.list = {};
+
 var Player = function(id){
-	var self = Entity();
+	var self = Entity(20);
 	self.id = id;
 	self.hp = 10;
 	self.number = Math.random();
@@ -68,14 +140,14 @@ var Player = function(id){
 	
 	
 	self.bounding = function(){
-		if(self.x<0)
-			self.x=0;
-		if(self.x>500)
-			self.x=500;
-		if(self.y<0)
-			self.y=0;
-		if(self.y>500)
-			self.y=500;
+		if(self.x<0 + self.size/2)
+			self.x=0+self.size/2;
+		if(self.x>WIDTH-self.size/2)
+			self.x=WIDTH-self.size/2;
+		if(self.y<0+self.size/2)
+			self.y=0+self.size/2;
+		if(self.y>HEIGHT-self.size/2)
+			self.y=HEIGHT-self.size/2;
 	}
 
 	
@@ -138,6 +210,7 @@ Player.update = function(){
 		pack.push({
 			x:player.x,
 			y:player.y,
+			size:player.size,
 			number:player.number
 		});		
 	}
@@ -145,7 +218,7 @@ Player.update = function(){
 }
 
 var Bullet = function(parent,angle){
-	var self = Entity();
+	var self = Entity(5);
 	self.id = Math.random();
 	self.spdX = Math.cos(angle/180*Math.PI) * 5;
 	self.spdY = Math.sin(angle/180*Math.PI) * 5;
@@ -154,7 +227,7 @@ var Bullet = function(parent,angle){
 	self.toRemove = false;
 	var super_update = self.update;
 	self.update = function(){
-		if(self.timer++ > 100)
+		if(self.timer++ > 150)
 			self.toRemove = true;
 		super_update();
 		
@@ -166,10 +239,10 @@ var Bullet = function(parent,angle){
 				if (Player.list[i].hp-- <= 1)
 				{
 					Player.list[i].hp = 10;
-					Player.list[i].x=Math.random()*500;
-					Player.list[i].y=Math.random()*500;
+					Player.list[i].x=Math.random()*WIDTH;
+					Player.list[i].y=Math.random()*HEIGHT;
 					Player.list[i].atkSpd = 1;
-					Player.list[i].score =0;
+					Player.list[i].score = Math.floor(Player.list[i].score/2);
 				}
 				for (var j in Player.list){
 					var p2 = Player.list[j];
@@ -199,7 +272,23 @@ Bullet.update = function(){
 			pack.push({
 				x:bullet.x,
 				y:bullet.y,
+				size:bullet.size
 			});		
+	}
+	return pack;
+}
+
+Wall.update = function(){
+	var pack = [];
+	for(var i in Wall.list){
+		var wall = Wall.list[i];
+		wall.update();
+		pack.push({
+			x:wall.x,
+			y:wall.y,
+			width:wall.width,
+			height:wall.height
+		});
 	}
 	return pack;
 }
@@ -210,7 +299,7 @@ var io = require('socket.io')(serv,{});
 io.sockets.on('connection', function(socket){
 	socket.id = Math.random();
 	SOCKET_LIST[socket.id] = socket;
-	
+	Wall();
 	Player.onConnect(socket);
 	
 	socket.on('disconnect',function(){
@@ -232,7 +321,6 @@ io.sockets.on('connection', function(socket){
 	});
 	
 	
-	
 });
 
 setInterval(function(){
@@ -240,6 +328,7 @@ setInterval(function(){
 	var pack = {
 		player:Player.update(),
 		bullet:Bullet.update(),
+		wall:Wall.update(),
 	}
 	
 	for(var i in SOCKET_LIST){

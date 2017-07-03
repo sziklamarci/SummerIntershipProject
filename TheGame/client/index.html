@@ -1,5 +1,5 @@
 
-<canvas id="ctx" width="500" height="500" style="border:1px solid #000000;"></canvas>
+<canvas id="ctx" width="800" height="500" style="border:1px solid #000000;"></canvas>
 
 <div id="chat-text" style="width:500px;height:100px;overflow-y:scroll">
 	<div>Hello!</div>
@@ -32,7 +32,7 @@
 	});
 	
 	socket.on('newPositions',function(data){
-		ctx.clearRect(0,0,500,500);
+		ctx.clearRect(0,0,800,500);
 		
 		for(var i = 0 ; i < data.player.length; i++){
 			if (data.player[i].number == num){
@@ -40,15 +40,19 @@
 			}else{
 				ctx.fillStyle = 'red';
 			}
-			ctx.fillRect(data.player[i].x-10,data.player[i].y-10,20,20)
+			ctx.fillRect(data.player[i].x - (data.player[i].size/2),data.player[i].y- (data.player[i].size/2),data.player[i].size,data.player[i].size)
 			}
 		for(var i = 0 ; i < data.bullet.length; i++){
 			ctx.fillStyle = 'black';
-			ctx.fillRect(data.bullet[i].x-5,data.bullet[i].y-5,5,5);
+			ctx.fillRect(data.bullet[i].x-(data.bullet[i].size/2),data.bullet[i].y-(data.bullet[i].size/2),data.bullet[i].size,data.bullet[i].size);
+		}
+		for(var i = 0 ; i < data.wall.length; i++){
+			ctx.fillStyle = 'black';
+			ctx.fillRect(data.wall[i].x-(data.wall[i].width/2),data.wall[i].y-(data.wall[i].height/2),data.wall[i].width,data.wall[i].height);
 		}
 		ctx.fillStyle = 'black';
 		ctx.fillText("HP: " + hp, 2,25);
-		ctx.fillText("score: " + score, 250,25);
+		ctx.fillText("score: " + score, 550,25);
 	});
 	
 	
