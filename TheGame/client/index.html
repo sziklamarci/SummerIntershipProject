@@ -1,4 +1,8 @@
-
+<style>
+    body {
+        cursor: crosshair;
+    }
+</style>
 <canvas id="ctx" width="800" height="500" style="border:1px solid #000000;"></canvas>
 
 <div id="chat-text" style="width:500px;height:100px;overflow-y:scroll">
@@ -102,8 +106,8 @@
 		socket.emit('keyPress',{inputId:'attack',state:false});
 	}
 	document.onmousemove = function(event){
-		var x = event.clientX;
-		var y = event.clientY;
+		var x = event.clientX - 8;
+		var y = event.clientY - 8;
 		socket.emit('keyPress',{inputId:'mouseAngle',x:x,y:y});
 	}
 	
