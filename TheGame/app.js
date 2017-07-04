@@ -51,6 +51,7 @@ var Wall = function(){
 	self.id = Math.random();
 	self.width = Math.floor(2+Math.random()*50);
 	self.height = Math.floor(2+Math.random()*50);
+	self.toRemove = false;
 	
 	var super_update = self.update;
 	self.update = function(){
@@ -232,12 +233,14 @@ var Bullet = function(parent,angle){
 		super_update();
 		
 		for(var i in Player.list){
+			var killed =false;
 			var p = Player.list[i];
 			if(self.getDistance(p) < 10 && self.parent !== p.id){
 				//IDE KELL MAJD A HP - ,stb
 				self.toRemove = true;
 				if (Player.list[i].hp-- <= 1)
 				{
+					killed = true; 
 					Player.list[i].hp = 10;
 					Player.list[i].x=Math.random()*WIDTH;
 					Player.list[i].y=Math.random()*HEIGHT;
@@ -248,8 +251,10 @@ var Bullet = function(parent,angle){
 					var p2 = Player.list[j];
 					if (self.parent === p2.id){
 						Player.list[j].score++;
-						if (Player.list[i].hp ==10)
-							Player.list[j].atkSpd=1;
+						if (killed){
+							Player.list[j].hp+=5;
+						}
+						killed=false;
 						break;
 					}
 				}
@@ -299,7 +304,6 @@ var io = require('socket.io')(serv,{});
 io.sockets.on('connection', function(socket){
 	socket.id = Math.random();
 	SOCKET_LIST[socket.id] = socket;
-	Wall();
 	Player.onConnect(socket);
 	
 	socket.on('disconnect',function(){
@@ -322,6 +326,18 @@ io.sockets.on('connection', function(socket){
 	
 	
 });
+
+setInterval(function(){
+	for(var i in Wall.list){
+		delete Wall.list[i];
+	}
+	Wall();
+	Wall();
+	Wall();
+	Wall();
+	Wall();
+	
+},60000);
 
 setInterval(function(){
 	
