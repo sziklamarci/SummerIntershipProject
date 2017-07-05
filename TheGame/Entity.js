@@ -1,3 +1,9 @@
+var wallMaxWidth=50;
+var wallMinWidth=2;
+var wallMaxHeight=50;
+var wallMinHeight=2;
+var playerSize=20;
+
 Entity = function(size){
 	var self = {
 		x:Math.random()*WIDTH,
@@ -25,8 +31,8 @@ Wall = function(){
 	if(self.y<50)
 		self.y=Math.random()*HEIGHT;
 	self.id = Math.random();
-	self.width = Math.floor(2+Math.random()*50);
-	self.height = Math.floor(2+Math.random()*50);
+	self.width = Math.floor(wallMinWidth+Math.random()*wallMaxWidth);
+	self.height = Math.floor(wallMinHeight+Math.random()*wallMaxHeight);
 	self.toRemove = false;
 	
 	var super_update = self.update;
@@ -83,9 +89,27 @@ Wall = function(){
 Wall.list = {};
 
 Player = function(id){
-	var self = Entity(20);
+	var self = Entity(playerSize);
 	self.id = id;
-	self.hp = 10;
+	self.type = Math.round(Math.random()*2);
+	if (self.type==0){
+		self.hp=10;
+		self.maxAmmo=30;
+		self.atkSpd = 2;
+		console.log("t0");
+	}
+	if (self.type==1){
+		self.hp=15;
+		self.maxAmmo=8;
+		self.atkSpd = 10;
+		console.log("t1");
+	}
+	if (self.type==2){
+		self.hp=5;
+		self.maxAmmo=100;
+		self.atkSpd = 0;
+		console.log("t2");
+	}
 	self.number = Math.random();
 	self.pressingRight = false;
 	self.pressingLeft = false;
@@ -95,12 +119,12 @@ Player = function(id){
 	self.mouseAngle = 0;
 	self.maxSpd = 5;
 	self.atkTimer = 0;
-	self.atkSpd = 1;
-	self.maxAmmo =30;
 	self.ammo = self.maxAmmo;
 	self.reloadTime = 1000/50 * 3;
 	self.reloadTimer = 0;
 	self.score = 0;
+	
+		
 	
 	var super_update = self.update;
 	self.update = function(){
@@ -108,10 +132,23 @@ Player = function(id){
 		self.bounding();
 		super_update();
 		if(self.pressingAttack&& self.atkTimer++>self.atkSpd && self.ammo > 0){
-			self.shootBullet(self.mouseAngle);
-			self.atkSpd+=0;
-			self.atkTimer=0;
-			self.ammo--;
+			if(self.type==0){
+				self.shootBullet(self.mouseAngle);
+				self.atkTimer=0;
+				self.ammo--;
+			}else if(self.type==1){
+				self.shootBullet(self.mouseAngle+(10-Math.random()*20));
+				self.shootBullet(self.mouseAngle+(10-Math.random()*20));
+				self.shootBullet(self.mouseAngle+(10-Math.random()*20));
+				self.shootBullet(self.mouseAngle+(10-Math.random()*20));
+				self.shootBullet(self.mouseAngle+(10-Math.random()*20));
+				self.atkTimer=0;
+				self.ammo--;
+			}else if(self.type==2){
+				self.shootBullet(self.mouseAngle+(10-Math.random()*20));
+				self.atkTimer=0;
+				self.ammo--;
+			}
 		}
 		
 		if (self.ammo == 0){
@@ -123,7 +160,7 @@ Player = function(id){
 			
 	}
 	self.shootBullet = function(angle){
-		var b = Bullet(self.id,angle);
+		var b = Bullet(self.id,angle,self.type);
 		b.x = self.x;
 		b.y = self.y;
 	}
@@ -161,8 +198,19 @@ Player = function(id){
 }
 Player.list = {};
 
-Bullet = function(parent,angle){
-	var self = Entity(5);
+Bullet = function(parent,angle,type){
+	if(type==0){
+		var self = Entity(5);
+	
+	}
+	else if(type==1){
+		var self = Entity(3);
+	
+	}
+	else if(type==2){
+		var self = Entity(2);
+		
+	}
 	self.id = Math.random();
 	self.spdX = Math.cos(angle/180*Math.PI) * 8;
 	self.spdY = Math.sin(angle/180*Math.PI) * 8;
@@ -178,7 +226,7 @@ Bullet = function(parent,angle){
 		for(var i in Player.list){
 			var killed =false;
 			var p = Player.list[i];
-			if(self.getDistance(p) < p.size/2 && self.parent !== p.id){
+			if(self.getDistance(p) < (p.size/2 + self.size/2) && self.parent !== p.id){
 				//IDE KELL MAJD A HP - ,stb
 				self.toRemove = true;
 				if (Player.list[i].hp-- <= 1)
