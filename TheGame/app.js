@@ -51,6 +51,7 @@ Player.onConnect = function(socket){
 		socket.emit('playerHp', player.hp);
 		socket.emit('playerScore', player.score);
 		socket.emit('playerNum', player.number);
+		socket.emit('playerAmmo',player.ammo);
 	});
 	
 	console.log("client connected.");

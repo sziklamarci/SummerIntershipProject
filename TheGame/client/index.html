@@ -21,6 +21,7 @@
 	var score = 0;
 	var num = 0;
 	var TimeToChange = 0;
+	var ammo;
 	socket.on('playerHp',function(data){
 		hp = data;
 	});
@@ -32,6 +33,9 @@
 	});
 	socket.on('TimeToChange',function(data){
 		TimeToChange = data;
+	});
+	socket.on('playerAmmo',function(data){
+		ammo = data;
 	});
 	
 	socket.on('newPositions',function(data){
@@ -55,8 +59,9 @@
 		}
 		ctx.fillStyle = 'black';
 		ctx.fillText("HP: " + hp, 2,25);
-		ctx.fillText("Time to change: " + TimeToChange, 200,25);
-		ctx.fillText("score: " + score, 550,25);
+		ctx.fillText("Time to change: " + TimeToChange, 150,25);
+		ctx.fillText("score: " + score, 650,25);
+		ctx.fillText("Ammo: " + ammo, 500, 25);
 	});
 	
 	

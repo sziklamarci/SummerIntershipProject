@@ -96,6 +96,10 @@ Player = function(id){
 	self.maxSpd = 5;
 	self.atkTimer = 0;
 	self.atkSpd = 1;
+	self.maxAmmo =30;
+	self.ammo = self.maxAmmo;
+	self.reloadTime = 1000/50 * 3;
+	self.reloadTimer = 0;
 	self.score = 0;
 	
 	var super_update = self.update;
@@ -103,11 +107,20 @@ Player = function(id){
 		self.updateSpd();
 		self.bounding();
 		super_update();
-		if(self.pressingAttack&& self.atkTimer++>self.atkSpd){
+		if(self.pressingAttack&& self.atkTimer++>self.atkSpd && self.ammo > 0){
 			self.shootBullet(self.mouseAngle);
 			self.atkSpd+=0;
 			self.atkTimer=0;
+			self.ammo--;
 		}
+		
+		if (self.ammo == 0){
+			if (self.reloadTimer++ >= self.reloadTime){
+				self.ammo = self.maxAmmo;
+				self.reloadTimer = 0;
+			}
+		}
+			
 	}
 	self.shootBullet = function(angle){
 		var b = Bullet(self.id,angle);
@@ -151,8 +164,8 @@ Player.list = {};
 Bullet = function(parent,angle){
 	var self = Entity(5);
 	self.id = Math.random();
-	self.spdX = Math.cos(angle/180*Math.PI) * 5;
-	self.spdY = Math.sin(angle/180*Math.PI) * 5;
+	self.spdX = Math.cos(angle/180*Math.PI) * 8;
+	self.spdY = Math.sin(angle/180*Math.PI) * 8;
 	self.parent = parent;
 	self.timer = 0;
 	self.toRemove = false;
@@ -165,7 +178,7 @@ Bullet = function(parent,angle){
 		for(var i in Player.list){
 			var killed =false;
 			var p = Player.list[i];
-			if(self.getDistance(p) < 10 && self.parent !== p.id){
+			if(self.getDistance(p) < p.size/2 && self.parent !== p.id){
 				//IDE KELL MAJD A HP - ,stb
 				self.toRemove = true;
 				if (Player.list[i].hp-- <= 1)
