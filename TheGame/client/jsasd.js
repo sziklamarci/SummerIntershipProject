@@ -1,15 +1,3 @@
-<canvas id="ctx" width="800" height="500" style="border:1px solid #000000;"></canvas>
-
-<div id="chat-text" style="width:500px;height:100px;overflow-y:scroll">
-	<div>Hello!</div>
-</div>
-
-<form id="chat-form">
-	<input id="chat-input" type="text" style="width:500px"></input>
-</form>
- 
-<script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
-<script>
 	var chatText = document.getElementById('chat-text');
 	var chatInput = document.getElementById('chat-input');
 	var chatForm = document.getElementById('chat-form');
@@ -113,5 +101,3 @@
 	
 	
 	
-	
-</script>
