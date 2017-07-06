@@ -95,7 +95,7 @@ Wall.list = {};
 Player = function(id){
 	var self = Entity(playerSize);
 	self.id = id;
-	self.type = 0;
+	self.type = Math.round(Math.random()*3);
 	if (self.type==0){
 		assault(self);
 	}
