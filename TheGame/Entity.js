@@ -59,13 +59,13 @@ Wall = function(){
 				height:Player.list[i].size,
 			}
 			if (testCollisionRectRect(rect1,rect2) && Player.list[i].pressingRight)
-				Player.list[i].x -= Player.list[i].size/2;
-			if (testCollisionRectRect(rect1,rect2) && Player.list[i].pressingLeft)
-				Player.list[i].x += Player.list[i].size/2;
-			if (testCollisionRectRect(rect1,rect2) && Player.list[i].pressingDown)
-				Player.list[i].y -= Player.list[i].size/2;
-			if (testCollisionRectRect(rect1,rect2) && Player.list[i].pressingUp)
-				Player.list[i].y += Player.list[i].size/2;
+				Player.list[i].x = rect1.x-Player.list[i].size/2-1;
+			else if (testCollisionRectRect(rect1,rect2) && Player.list[i].pressingLeft)
+				Player.list[i].x = rect1.x+rect1.width+Player.list[i].size/2+1;
+			else if (testCollisionRectRect(rect1,rect2) && Player.list[i].pressingDown)
+				Player.list[i].y = rect1.y-Player.list[i].size/2-1;
+			else if (testCollisionRectRect(rect1,rect2) && Player.list[i].pressingUp)
+				Player.list[i].y = rect1.y+rect1.height+Player.list[i].size/2+1;
 		}
 		for(var i in Bullet.list){
 			var b = Bullet.list[i];
@@ -181,16 +181,16 @@ Player = function(id){
 
 	
 	self.updateSpd = function(){
-		if(self.pressingRight)
+		if(self.pressingRight && !self.pressingLeft)
 			self.spdX = self.maxSpd;
-		else if(self.pressingLeft)
+		else if(self.pressingLeft &&! self.pressingRight)
 			self.spdX = -self.maxSpd;
 		else
 			self.spdX = 0;
 		
-		if(self.pressingUp)
+		if(self.pressingUp && !self.pressingDown)
 			self.spdY = -self.maxSpd;
-		else if(self.pressingDown)
+		else if(self.pressingDown && !self.pressingUp)
 			self.spdY = self.maxSpd;
 		else
 			self.spdY = 0;		
