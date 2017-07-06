@@ -43,6 +43,7 @@ Player.onConnect = function(socket){
 			var y = data.y-player.y;
 			var angle = Math.atan2(y,x) / Math.PI * 180;
 			player.mouseAngle = angle;
+			player.mouseDistance = Math.sqrt(Math.pow(x,2) + Math.pow(y,2));
 		}
 		
 		socket.emit('playerHp', player.hp);

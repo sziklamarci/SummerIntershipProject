@@ -130,6 +130,7 @@ Player = function(id){
 	self.pressingAttack = false;
 	self.mouseAngle = 0;
 	self.maxSpd = 5;
+	self.mouseDistance = 0;
 	self.atkTimer = 0;
 	self.ammo = self.maxAmmo;
 	self.reloadTimer = 0;
@@ -175,7 +176,7 @@ Player = function(id){
 			
 	}
 	self.shootBullet = function(angle){
-		var b = Bullet(self.id,angle,self.type);
+		var b = Bullet(self.id,angle,self.type,self.mouseDistance);
 		b.x = self.x;
 		b.y = self.y;
 	}
@@ -213,30 +214,34 @@ Player = function(id){
 }
 Player.list = {};
 
-Bullet = function(parent,angle,type){
+Bullet = function(parent,angle,type,distance){
 	if(type==0){
 		var self = Entity(5);
 		self.deleteTime = 150;
 		self.dmg = 2;
+		self.distance=800;
 	}
 	else if(type==1){
 		var self = Entity(3);
 		self.deleteTime = 150;
 		self.dmg = 1;
+		self.distance=800;
 	}
 	else if(type==2){
 		var self = Entity(2);
 		self.deleteTime = 200;
 		self.dmg = 1;
+		self.distance=800;
 	}
 	else if(type==3){
 		var self = Entity(5);
 		self.deleteTime = 100;
 		self.dmg = 5;
+		self.distance=distance;
 	}
 	self.id = Math.random();
-	self.spdX = Math.cos(angle/180*Math.PI) * 8;
-	self.spdY = Math.sin(angle/180*Math.PI) * 8;
+	self.spdX = Math.cos(angle/180*Math.PI) * distance/50;
+	self.spdY = Math.sin(angle/180*Math.PI) * distance/50;
 	self.parent = parent;
 	self.timer = 0;
 	self.toRemove = false;
@@ -289,7 +294,7 @@ Bullet = function(parent,angle,type){
 	}
 	
 	self.shootBullet = function(angle){
-		var b = Bullet(self.id,angle,2);
+		var b = Bullet(self.id,angle,2,400);
 		b.x = self.x;
 		b.y = self.y;
 	}
