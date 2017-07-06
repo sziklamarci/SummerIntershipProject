@@ -93,7 +93,7 @@ Wall.list = {};
 Player = function(id){
 	var self = Entity(playerSize);
 	self.id = id;
-	self.type = Math.round(Math.random()*3);
+	self.type = 0;
 	if (self.type==0){
 		self.hp=10;
 		self.maxAmmo=30;
