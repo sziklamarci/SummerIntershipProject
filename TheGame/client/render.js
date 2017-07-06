@@ -99,7 +99,15 @@ document.onmouseup = function(event){
 	socket.emit('keyPress',{inputId:'attack',state:false});
 }
 document.onmousemove = function(event){
-	var x = event.clientX - 8;
-	var y = event.clientY - 8;
+    var topNavHeight = document.getElementById("topnav").clientHeight;
+    var html = document.getElementsByTagName("body")[0];
+    var style = window.getComputedStyle(html);
+    var marginTop = parseInt(style.getPropertyValue('margin-left'),10);
+    
+    console.log(marginTop);
+    // to do
+	var x = event.clientX - marginTop - 1;
+	var y = event.clientY - topNavHeight - marginTop - 1;
+    
 	socket.emit('keyPress',{inputId:'mouseAngle',x:x,y:y});
 }
