@@ -1,3 +1,5 @@
+require('./PlayerType');
+
 var wallMaxWidth=50;
 var wallMinWidth=2;
 var wallMaxHeight=50;
@@ -95,32 +97,16 @@ Player = function(id){
 	self.id = id;
 	self.type = Math.round(Math.random()*3);
 	if (self.type==0){
-		self.hp=10;
-		self.maxAmmo=30;
-		self.reloadTime = 1000/50 * 4;
-		self.atkSpd = 2;
-		console.log("t0");
+		assault(self);
 	}
 	if (self.type==1){
-		self.hp=15;
-		self.maxAmmo=8;
-		self.reloadTime = 1000/50 * 6;
-		self.atkSpd = 10;
-		console.log("t1");
+		shotgun(self);
 	}
 	if (self.type==2){
-		self.hp=10;
-		self.maxAmmo=100;
-		self.reloadTime = 1000/50 * 8;
-		self.atkSpd = 0;
-		console.log("t2");
+		minigun(self);
 	}
 	if (self.type==3){
-		self.hp=10;
-		self.maxAmmo=4;
-		self.reloadTime = 1000/50 * 6;
-		self.atkSpd = 15;
-		console.log("t3");
+		grenade(self);
 	}
 	self.number = Math.random();
 	self.pressingRight = false;
@@ -219,19 +205,19 @@ Bullet = function(parent,angle,type,distance){
 		var self = Entity(5);
 		self.deleteTime = 150;
 		self.dmg = 2;
-		self.distance=800;
+		self.distance=400;
 	}
 	else if(type==1){
 		var self = Entity(3);
 		self.deleteTime = 150;
 		self.dmg = 1;
-		self.distance=800;
+		self.distance=400;
 	}
 	else if(type==2){
 		var self = Entity(2);
 		self.deleteTime = 200;
 		self.dmg = 1;
-		self.distance=800;
+		self.distance=400;
 	}
 	else if(type==3){
 		var self = Entity(5);
@@ -240,8 +226,8 @@ Bullet = function(parent,angle,type,distance){
 		self.distance=distance;
 	}
 	self.id = Math.random();
-	self.spdX = Math.cos(angle/180*Math.PI) * distance/50;
-	self.spdY = Math.sin(angle/180*Math.PI) * distance/50;
+	self.spdX = Math.cos(angle/180*Math.PI) * self.distance/50;
+	self.spdY = Math.sin(angle/180*Math.PI) * self.distance/50;
 	self.parent = parent;
 	self.timer = 0;
 	self.toRemove = false;
@@ -300,6 +286,7 @@ Bullet = function(parent,angle,type,distance){
 	}
 	
 	Bullet.list[self.id] = self;
+	
 	return self;
 }
 Bullet.list = {};
