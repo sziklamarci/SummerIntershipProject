@@ -1,14 +1,15 @@
-	var chatText = document.getElementById('chat-text');
+var chatText = document.getElementById('chat-text');
 	var chatInput = document.getElementById('chat-input');
 	var chatForm = document.getElementById('chat-form');
 	var ctx = document.getElementById("ctx").getContext("2d");
-	ctx.font = '30px Arial';
+	ctx.font = '20px Arial';
 	
 	var socket = io();
 	var hp = 10;
 	var score = 0;
 	var num = 0;
 	var TimeToChange = 0;
+	var ammo;
 	socket.on('playerHp',function(data){
 		hp = data;
 	});
@@ -20,6 +21,9 @@
 	});
 	socket.on('TimeToChange',function(data){
 		TimeToChange = data;
+	});
+	socket.on('playerAmmo',function(data){
+		ammo = data;
 	});
 	
 	socket.on('newPositions',function(data){
@@ -43,8 +47,9 @@
 		}
 		ctx.fillStyle = 'black';
 		ctx.fillText("HP: " + hp, 2,25);
-		ctx.fillText("Time to change: " + TimeToChange, 200,25);
-		ctx.fillText("score: " + score, 550,25);
+		ctx.fillText("Time to change: " + TimeToChange, 150,25);
+		ctx.fillText("score: " + score, 650,25);
+		ctx.fillText("Ammo: " + ammo, 470, 25);
 	});
 	
 	
