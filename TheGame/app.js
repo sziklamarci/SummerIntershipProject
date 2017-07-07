@@ -75,7 +75,8 @@ Player.update = function(){
 			x:player.x,
 			y:player.y,
 			size:player.size,
-			number:player.number
+			number:player.number,
+			invisible:player.invisible
 		});		
 	}
 	return pack;

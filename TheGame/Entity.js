@@ -23,7 +23,8 @@ var playerSpd=5;
 var playerSize=20;
 var frag=20;
 var pellets=5;
-var stunTime=100;
+var stunTime = 100;
+var invisibleTime = 150;
 var shotgunSpread = 20;
 var minigunSpread = 20;
 var grenadeSpread = 10;
@@ -158,6 +159,8 @@ Player = function(id){
 	self.pressingSpec2 = false;
 	self.stunned = false;
 	self.stunTimer=0;
+	self.invisible = false;
+	self.invisibleTimer = 0;
 	self.mouseAngle = 0;
 	self.maxSpd = playerSpd;
 	self.mouseDistance = 0;
@@ -181,6 +184,13 @@ Player = function(id){
 				self.stunned=false;
 				self.stunTimer=0;
 				self.maxSpd=playerSpd;
+			}
+		}
+		
+		if (self.invisible){
+			if(self.invisibleTimer++ > invisibleTime){
+				self.invisible = false;
+				self.invisibleTimer = 0;
 			}
 		}
 		

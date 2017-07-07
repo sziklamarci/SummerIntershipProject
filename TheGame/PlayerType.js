@@ -4,6 +4,7 @@ var assaultSpec2CD=10;
 var assaultSpec2Distance=50;
 var shotgunSpec1CD=8;
 var shotgunSpec2CD=10;
+var minigunSpec1CD=12;
 
 assault = function(self){
 	self.hp = 10;
@@ -56,6 +57,14 @@ minigun = function(self){
 	self.maxAmmo = 100;
 	self.reloadTime = 1000/50 * 8;
 	self.atkSpd = 1;
+	
+	self.spec1CD=50*minigunSpec1CD;
+	self.spec1Timer=0;
+	self.spec1=function(){
+		self.invisible = true;
+		self.spec1Timer=0;
+	}
+	
 }
 
 grenade = function(self){

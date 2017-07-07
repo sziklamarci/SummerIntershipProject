@@ -48,10 +48,14 @@ socket.on('newPositions',function(data){
 	for(var i = 0 ; i < data.player.length; i++){
 		if (data.player[i].number == num){
 			ctx.fillStyle = 'green';
+			if (data.player[i].invisible)
+				ctx.fillStyle = 'WhiteSmoke';
 		}else{
 			ctx.fillStyle = 'red';
+			if (data.player[i].invisible)
+				ctx.fillStyle = 'White';
 		}
-		ctx.fillRect(data.player[i].x - (data.player[i].size/2),data.player[i].y- (data.player[i].size/2),data.player[i].size,data.player[i].size)
+			ctx.fillRect(data.player[i].x - (data.player[i].size/2),data.player[i].y- (data.player[i].size/2),data.player[i].size,data.player[i].size)
 		}
 	for(var i = 0 ; i < data.bullet.length; i++){
 		ctx.fillStyle = data.bullet[i].color;
