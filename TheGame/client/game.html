@@ -1,0 +1,23 @@
+<link rel="stylesheet" type="text/css" href="MainPage.css">
+<script type="text/javascript" src="jquery.js"></script>
+
+<div class="topnav" id="topnav">
+			<a href="index.html" class="button mainpage">Change name/Reset points</a>
+			
+		</div>
+
+<canvas z-index="1" id="ctx" width="800" height="500" style="border:1px solid #000000;">
+</canvas>
+
+<div id="chat-text" style="width:500px;height:100px;overflow-y:scroll">
+	<div>Hello!</div>
+</div>
+
+<form id="chat-form">
+	<input id="chat-input" type="text" style="width:500px"></input>
+</form>
+ 
+<script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
+<script src="render.js"></script>
+
+

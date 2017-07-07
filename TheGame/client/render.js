@@ -129,7 +129,7 @@ document.onmousemove = function(event){
     var style = window.getComputedStyle(html);
     var marginTop = parseInt(style.getPropertyValue('margin-left'),10);
     
-    console.log(marginTop);
+   
     // to do
 	var x = event.clientX - marginTop - 1;
 	var y = event.clientY - topNavHeight - marginTop - 1;
