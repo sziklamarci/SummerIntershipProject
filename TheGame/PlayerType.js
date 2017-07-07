@@ -29,9 +29,9 @@ assault = function(self){
 
 shotgun = function(self){
 	self.hp = 15;
-	self.maxAmmo = 5;
+	self.maxAmmo = 8;
 	self.reloadTime = 1000/50 * 6;
-	self.atkSpd = 10;
+	self.atkSpd = 9;
 	self.spec1Toggle = false;
 	
 	self.spec1CD=50*shotgunSpec1CD;
@@ -55,7 +55,7 @@ minigun = function(self){
 	self.hp = 10;
 	self.maxAmmo = 100;
 	self.reloadTime = 1000/50 * 8;
-	self.atkSpd = 0;
+	self.atkSpd = 1;
 }
 
 grenade = function(self){

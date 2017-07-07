@@ -54,7 +54,7 @@ socket.on('newPositions',function(data){
 		ctx.fillRect(data.player[i].x - (data.player[i].size/2),data.player[i].y- (data.player[i].size/2),data.player[i].size,data.player[i].size)
 		}
 	for(var i = 0 ; i < data.bullet.length; i++){
-		ctx.fillStyle = 'black';
+		ctx.fillStyle = data.bullet[i].color;
 		ctx.fillRect(data.bullet[i].x-(data.bullet[i].size/2),data.bullet[i].y-(data.bullet[i].size/2),data.bullet[i].size,data.bullet[i].size);
 	}
 	for(var i = 0 ; i < data.wall.length; i++){

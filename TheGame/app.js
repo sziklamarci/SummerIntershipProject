@@ -92,7 +92,8 @@ Bullet.update = function(){
 			pack.push({
 				x:bullet.x,
 				y:bullet.y,
-				size:bullet.size
+				size:bullet.size,
+				color:bullet.color
 			});		
 	}
 	return pack;

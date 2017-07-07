@@ -1,13 +1,33 @@
 require('./PlayerType');
+require('./BulletType')
+
+/*
+PlayerType :	0 assault
+				1 shotgun
+				2 minigun
+				3 grenade
+				
+BulletType : 	0 assault
+				1 shotgun
+				2 minigun
+				3 grenade
+				100 stun nade
+				101 stun pellet
+*/
 
 var wallMaxWidth=50;
 var wallMinWidth=2;
 var wallMaxHeight=50;
 var wallMinHeight=2;
+var playerSpd=5;
 var playerSize=20;
 var frag=20;
 var pellets=5;
 var stunTime=100;
+var shotgunSpread = 20;
+var minigunSpread = 20;
+var grenadeSpread = 10;
+
 
 Entity = function(size){
 	var self = {
@@ -92,8 +112,17 @@ Wall = function(){
 					height:b.size+4,
 				}
 			}
+			
+			if(b.type==4 || b.type==100){
+				if (testCollisionRectRect(rect1,rect2) && rect1.x < rect2.x && rect2.x+rect2.width < rect1.x+rect.width){
+					Bullet.list[i].spdY *= -1;
+				}else
+					Bullet.list[i].spdX *= -1;
+			}
+			else
 			if (testCollisionRectRect(rect1,rect2)){
 					Bullet.list[i].timer=Bullet.list[i].deleteTime+1;
+					
 			}
 		}
 	}
@@ -130,7 +159,7 @@ Player = function(id){
 	self.stunned = false;
 	self.stunTimer=0;
 	self.mouseAngle = 0;
-	self.maxSpd = 5;
+	self.maxSpd = playerSpd;
 	self.mouseDistance = 0;
 	self.atkTimer = 0;
 	self.ammo = self.maxAmmo;
@@ -151,14 +180,14 @@ Player = function(id){
 			if (self.stunTimer++>stunTime){
 				self.stunned=false;
 				self.stunTimer=0;
-				self.maxSpd=5;
+				self.maxSpd=playerSpd;
 			}
 		}
 		
 		if(self.atkTimer<self.atkSpd)
 			self.atkTimer++;
 		
-		if(self.pressingAttack&& self.atkTimer>=self.atkSpd && self.ammo > 0){
+		if(self.pressingAttack && self.atkTimer >= self.atkSpd && self.ammo > 0){
 			if(self.type==0){
 				self.shootBullet(self.mouseAngle);
 				self.atkTimer=0;
@@ -166,21 +195,21 @@ Player = function(id){
 			}else if(self.type==1){
 				if (self.spec1Toggle){
 					for (var i=0; i<pellets*2; i++){
-						self.shootBullet(self.mouseAngle+(10-Math.random()*25));
+						self.shootBullet(self.mouseAngle+((shotgunSpread/1.5)-Math.random()*shotgunSpread*1.5));
 					}
 					self.spec1Toggle=false;
 				}
-				for (var i=0; i<pellets; i++){
-						self.shootBullet(self.mouseAngle+(10-Math.random()*15));
+				for (var i=0; i < pellets; i++){
+						self.shootBullet(self.mouseAngle+((shotgunSpread/2)-Math.random()*shotgunSpread));
 				}
+				self.atkTimer = 0;
+				self.ammo--;
+			}else if(self.type == 2){
+				self.shootBullet(self.mouseAngle+((minigunSpread/2)-Math.random()*minigunSpread));
 				self.atkTimer=0;
 				self.ammo--;
-			}else if(self.type==2){
-				self.shootBullet(self.mouseAngle+(10-Math.random()*20));
-				self.atkTimer=0;
-				self.ammo--;
-			}else if(self.type==3){
-				self.shootBullet(self.mouseAngle+(10-Math.random()*20));
+			}else if(self.type == 3){
+				self.shootBullet(self.mouseAngle+((grenadeSpread/2)-Math.random()*grenadeSpread));
 				self.atkTimer=0;
 				self.ammo--;
 			}
@@ -245,41 +274,27 @@ Player.list = {};
 Bullet = function(parent,angle,type,distance){
 	if(type==0){
 		var self = Entity(5);
-		self.deleteTime = 150;
-		self.dmg = 2;
-		self.distance=400;
+		assaultB(self);
 	}
 	else if(type==1){
 		var self = Entity(3);
-		self.deleteTime = 150;
-		self.dmg = 1;
-		self.distance=400;
+		shotgunB(self);
 	}
 	else if(type==2){
 		var self = Entity(2);
-		self.deleteTime = 200;
-		self.dmg = 1;
-		self.distance=400;
+		minigunB(self);
 	}
 	else if(type==3){
 		var self = Entity(5);
-		self.deleteTime = 100;
-		self.dmg = 5;
-		self.distance=distance;
+		grenadeB(self,distance);
 	}
 	else if(type==100){
 		var self = Entity(5);
-		self.deleteTime = 25;
-		self.dmg = 0;
-		self.distance=400;
-		self.stun=true;
+		stunB(self);
 	}
 	else if(type==101){
 		var self = Entity(2);
-		self.deleteTime = 8;
-		self.dmg = 0;
-		self.distance=500;
-		self.stun=true;
+		stunPellet(self);
 	}
 	self.id = Math.random();
 	self.spdX = Math.cos(angle/180*Math.PI) * self.distance/50;
@@ -318,7 +333,6 @@ Bullet = function(parent,angle,type,distance){
 				
 				if(self.stun){
 					Player.list[i].stunned=true;
-					console.log("stun")
 				}
 					
 				if (Player.list[i].hp <= 1)
