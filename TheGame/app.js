@@ -38,6 +38,10 @@ Player.onConnect = function(socket){
 			player.pressingDown = data.state;
 		else if(data.inputId === 'attack')
 			player.pressingAttack = data.state;
+		else if(data.inputId === 'spec1')
+			player.pressingSpec1 = data.state;
+		else if(data.inputId === 'spec2')
+			player.pressingSpec2 = data.state;
 		else if(data.inputId === 'mouseAngle'){
 			var x = data.x-player.x;
 			var y = data.y-player.y;
@@ -50,6 +54,10 @@ Player.onConnect = function(socket){
 		socket.emit('playerScore', player.score);
 		socket.emit('playerNum', player.number);
 		socket.emit('playerAmmo',player.ammo);
+		socket.emit('playerSpec1CD',player.spec1CD);
+		socket.emit('playerSpec1Timer',player.spec1Timer);
+		socket.emit('playerSpec2CD',player.spec2CD);
+		socket.emit('playerSpec2Timer',player.spec2Timer);
 	});
 	
 	console.log("client connected.");

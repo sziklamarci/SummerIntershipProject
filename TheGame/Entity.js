@@ -6,6 +6,8 @@ var wallMaxHeight=50;
 var wallMinHeight=2;
 var playerSize=20;
 var frag=20;
+var pellets=5;
+var stunTime=100;
 
 Entity = function(size){
 	var self = {
@@ -59,13 +61,13 @@ Wall = function(){
 				height:Player.list[i].size,
 			}
 			if (testCollisionRectRect(rect1,rect2) && Player.list[i].pressingRight)
-				Player.list[i].x -= Player.list[i].size/2;
-			if (testCollisionRectRect(rect1,rect2) && Player.list[i].pressingLeft)
-				Player.list[i].x += Player.list[i].size/2;
-			if (testCollisionRectRect(rect1,rect2) && Player.list[i].pressingDown)
-				Player.list[i].y -= Player.list[i].size/2;
-			if (testCollisionRectRect(rect1,rect2) && Player.list[i].pressingUp)
-				Player.list[i].y += Player.list[i].size/2;
+				Player.list[i].x = rect1.x-Player.list[i].size/2-1;
+			else if (testCollisionRectRect(rect1,rect2) && Player.list[i].pressingLeft)
+				Player.list[i].x = rect1.x+rect1.width+Player.list[i].size/2+1;
+			else if (testCollisionRectRect(rect1,rect2) && Player.list[i].pressingDown)
+				Player.list[i].y = rect1.y-Player.list[i].size/2-1;
+			else if (testCollisionRectRect(rect1,rect2) && Player.list[i].pressingUp)
+				Player.list[i].y = rect1.y+rect1.height+Player.list[i].size/2+1;
 		}
 		for(var i in Bullet.list){
 			var b = Bullet.list[i];
@@ -75,14 +77,23 @@ Wall = function(){
 				width:self.width,
 				height:self.height,
 			}
-			var rect2 = {
-				x:b.x-b.size/2,
-				y:b.y-b.size/2,
-				width:b.size,
-				height:b.size,
+			if(b.type==4 || b.type==100){
+				var rect2 = {
+					x:b.x-b.size/2+7,
+					y:b.y-b.size/2+7,
+					width:b.size+14,
+					height:b.size+14,
+				}
+			}else{
+				var rect2 = {
+					x:b.x-b.size/2+2,
+					y:b.y-b.size/2+2,
+					width:b.size+4,
+					height:b.size+4,
+				}
 			}
 			if (testCollisionRectRect(rect1,rect2)){
-					Bullet.list[i].timer=Bullet.list[i].deleteTime;
+					Bullet.list[i].timer=Bullet.list[i].deleteTime+1;
 			}
 		}
 	}
@@ -114,6 +125,10 @@ Player = function(id){
 	self.pressingUp = false;
 	self.pressingDown = false;
 	self.pressingAttack = false;
+	self.pressingSpec1 = false;
+	self.pressingSpec2 = false;
+	self.stunned = false;
+	self.stunTimer=0;
 	self.mouseAngle = 0;
 	self.maxSpd = 5;
 	self.mouseDistance = 0;
@@ -129,17 +144,35 @@ Player = function(id){
 		self.updateSpd();
 		self.bounding();
 		super_update();
-		if(self.pressingAttack&& self.atkTimer++>self.atkSpd && self.ammo > 0){
+		
+		if (self.stunned){
+			self.maxSpd=0;
+			self.atkTimer--;
+			if (self.stunTimer++>stunTime){
+				self.stunned=false;
+				self.stunTimer=0;
+				self.maxSpd=5;
+			}
+		}
+		
+		if(self.atkTimer<self.atkSpd)
+			self.atkTimer++;
+		
+		if(self.pressingAttack&& self.atkTimer>=self.atkSpd && self.ammo > 0){
 			if(self.type==0){
 				self.shootBullet(self.mouseAngle);
 				self.atkTimer=0;
 				self.ammo--;
 			}else if(self.type==1){
-				self.shootBullet(self.mouseAngle+(10-Math.random()*20));
-				self.shootBullet(self.mouseAngle+(10-Math.random()*20));
-				self.shootBullet(self.mouseAngle+(10-Math.random()*20));
-				self.shootBullet(self.mouseAngle+(10-Math.random()*20));
-				self.shootBullet(self.mouseAngle+(10-Math.random()*20));
+				if (self.spec1Toggle){
+					for (var i=0; i<pellets*2; i++){
+						self.shootBullet(self.mouseAngle+(10-Math.random()*25));
+					}
+					self.spec1Toggle=false;
+				}
+				for (var i=0; i<pellets; i++){
+						self.shootBullet(self.mouseAngle+(10-Math.random()*15));
+				}
 				self.atkTimer=0;
 				self.ammo--;
 			}else if(self.type==2){
@@ -153,13 +186,22 @@ Player = function(id){
 			}
 		}
 		
+		if(self.spec1Timer<self.spec1CD)
+			self.spec1Timer++;
+		if(self.pressingSpec1&&self.spec1Timer>=self.spec1CD)
+			self.spec1();
+		
+		if(self.spec2Timer<self.spec2CD)
+			self.spec2Timer++;
+		if(self.pressingSpec2&&self.spec2Timer>=self.spec2CD)
+			self.spec2();
+		
 		if (self.ammo == 0){
 			if (self.reloadTimer++ >= self.reloadTime){
 				self.ammo = self.maxAmmo;
 				self.reloadTimer = 0;
 			}
 		}
-			
 	}
 	self.shootBullet = function(angle){
 		var b = Bullet(self.id,angle,self.type,self.mouseDistance);
@@ -181,16 +223,16 @@ Player = function(id){
 
 	
 	self.updateSpd = function(){
-		if(self.pressingRight)
+		if(self.pressingRight && !self.pressingLeft)
 			self.spdX = self.maxSpd;
-		else if(self.pressingLeft)
+		else if(self.pressingLeft &&! self.pressingRight)
 			self.spdX = -self.maxSpd;
 		else
 			self.spdX = 0;
 		
-		if(self.pressingUp)
+		if(self.pressingUp && !self.pressingDown)
 			self.spdY = -self.maxSpd;
-		else if(self.pressingDown)
+		else if(self.pressingDown && !self.pressingUp)
 			self.spdY = self.maxSpd;
 		else
 			self.spdY = 0;		
@@ -225,6 +267,20 @@ Bullet = function(parent,angle,type,distance){
 		self.dmg = 5;
 		self.distance=distance;
 	}
+	else if(type==100){
+		var self = Entity(5);
+		self.deleteTime = 25;
+		self.dmg = 0;
+		self.distance=400;
+		self.stun=true;
+	}
+	else if(type==101){
+		var self = Entity(2);
+		self.deleteTime = 8;
+		self.dmg = 0;
+		self.distance=500;
+		self.stun=true;
+	}
 	self.id = Math.random();
 	self.spdX = Math.cos(angle/180*Math.PI) * self.distance/50;
 	self.spdY = Math.sin(angle/180*Math.PI) * self.distance/50;
@@ -237,17 +293,20 @@ Bullet = function(parent,angle,type,distance){
 			self.toRemove = true;
 			if(type===3){
 				for (i=0; i<frag; i++)
-					self.shootBullet(Math.random()*360)
+					self.shootBullet(Math.random()*360,2)
 			}
+			if(type===100)
+				for (i=0; i<frag*5; i++)
+					self.shootBullet(Math.random()*360,101)
 		}
 		super_update();
-		if(type===2){
-			self.spdX /= 1.01;
-			self.spdY /= 1.01;
-		}
 		if(type===3){
 			self.spdX /= 1.02;
 			self.spdY /= 1.02;
+		}
+		if(type===100){
+			self.spdX /= 1.01;
+			self.spdY /= 1.01;
 		}
 		for(var i in Player.list){
 			var killed =false;
@@ -255,7 +314,13 @@ Bullet = function(parent,angle,type,distance){
 			if(self.getDistance(p) < (p.size/2 + self.size/2) && self.parent !== p.id){
 				//IDE KELL MAJD A HP - ,stb
 				self.toRemove = true;
-				Player.list[i].hp-=self.dmg
+				Player.list[i].hp-=self.dmg;
+				
+				if(self.stun){
+					Player.list[i].stunned=true;
+					console.log("stun")
+				}
+					
 				if (Player.list[i].hp <= 1)
 				{
 					killed = true; 
@@ -267,7 +332,7 @@ Bullet = function(parent,angle,type,distance){
 				for (var j in Player.list){
 					var p2 = Player.list[j];
 					if (self.parent === p2.id){
-						Player.list[j].score++;
+						Player.list[j].score+=self.dmg;
 						if (killed){
 							Player.list[j].hp+=5;
 						}
@@ -279,8 +344,8 @@ Bullet = function(parent,angle,type,distance){
 		}
 	}
 	
-	self.shootBullet = function(angle){
-		var b = Bullet(self.id,angle,2,400);
+	self.shootBullet = function(angle,type){
+		var b = Bullet(self.parent,angle,type,400);
 		b.x = self.x;
 		b.y = self.y;
 	}
