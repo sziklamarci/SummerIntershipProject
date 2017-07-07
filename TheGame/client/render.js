@@ -2,7 +2,7 @@ var chatText = document.getElementById('chat-text');
 var chatInput = document.getElementById('chat-input');
 var chatForm = document.getElementById('chat-form');
 var ctx = document.getElementById("ctx").getContext("2d");
-ctx.font = '20px Arial';
+ctx.font = '15px Arial';
 
 var socket = io();
 var hp = 10;
@@ -10,6 +10,11 @@ var score = 0;
 var num = 0;
 var TimeToChange = 0;
 var ammo;
+var spec1CD = 0;
+var spec1Timer = 0;
+var spec2CD = 0;
+var spec2Timer = 0;
+
 socket.on('playerHp',function(data){
 	hp = data;
 });
@@ -25,7 +30,18 @@ socket.on('TimeToChange',function(data){
 socket.on('playerAmmo',function(data){
 	ammo = data;
 });
-
+socket.on('playerSpec1CD',function(data){
+	spec1CD = data;
+});
+socket.on('playerSpec1Timer',function(data){
+	spec1Timer = data;
+});
+socket.on('playerSpec2CD',function(data){
+	spec2CD = data;
+});
+socket.on('playerSpec2Timer',function(data){
+	spec2Timer = data;
+});
 socket.on('newPositions',function(data){
 	ctx.clearRect(0,0,800,500);
 	
@@ -46,10 +62,12 @@ socket.on('newPositions',function(data){
 		ctx.fillRect(data.wall[i].x-(data.wall[i].width/2),data.wall[i].y-(data.wall[i].height/2),data.wall[i].width,data.wall[i].height);
 	}
 	ctx.fillStyle = 'black';
-	ctx.fillText("HP: " + hp, 2,25);
-	ctx.fillText("Time to change: " + TimeToChange, 150,25);
-	ctx.fillText("score: " + score, 650,25);
-	ctx.fillText("Ammo: " + ammo, 470, 25);
+	ctx.fillText("HP: " + hp, 5,15);
+	ctx.fillText("Q: " + Math.round(spec1Timer/spec1CD*100) + "%", 80,15);
+	ctx.fillText("E: " + Math.round(spec2Timer/spec2CD*100) + "%", 140,15);
+	ctx.fillText("Time to change: " + TimeToChange, 390,15);
+	ctx.fillText("Ammo: " + ammo, 590, 15);
+	ctx.fillText("score: " + score, 690,15);
 });
 	
 	
@@ -79,7 +97,10 @@ document.onkeydown = function(event){
 		socket.emit('keyPress',{inputId:'left',state:true});
 	else if(event.keyCode === 87) // w
 		socket.emit('keyPress',{inputId:'up',state:true});
-		
+	else if(event.keyCode === 81) // q
+		socket.emit('keyPress',{inputId:'spec1',state:true});	
+	else if(event.keyCode === 69) // e
+		socket.emit('keyPress',{inputId:'spec2',state:true});
 }
 document.onkeyup = function(event){
 	if(event.keyCode === 68)	//d
@@ -90,6 +111,10 @@ document.onkeyup = function(event){
 		socket.emit('keyPress',{inputId:'left',state:false});
 	else if(event.keyCode === 87) // w
 		socket.emit('keyPress',{inputId:'up',state:false});
+	else if(event.keyCode === 81) // q
+		socket.emit('keyPress',{inputId:'spec1',state:false});
+	else if(event.keyCode === 69) // e
+		socket.emit('keyPress',{inputId:'spec2',state:false});
 }
 	
 document.onmousedown = function(event){
