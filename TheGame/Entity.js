@@ -204,8 +204,8 @@ Player = function(id){
 				self.ammo--;
 			}else if(self.type==1){
 				if (self.spec1Toggle){
-					for (var i=0; i<pellets*2; i++){
-						self.shootBullet(self.mouseAngle+((shotgunSpread/1.5)-Math.random()*shotgunSpread*1.5));
+					for (var i=0; i<pellets*3; i++){
+						self.shootBullet(self.mouseAngle+((shotgunSpread/2)-Math.random()*shotgunSpread*2));
 					}
 					self.spec1Toggle=false;
 				}
