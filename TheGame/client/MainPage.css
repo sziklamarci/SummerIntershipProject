@@ -104,3 +104,25 @@ body{
     text-decoration: none;
 }
 
+#loginButton  {
+    position: absolute;
+    z-index: 2;
+    
+    
+}
+
+#loginButton:hover {
+    cursor: hand;
+}
+
+#ctx {
+    
+    
+}
+
+
+#chooseName {
+    position: absolute;
+    
+}
+
