@@ -21,7 +21,7 @@ var wallMaxHeight=50;
 var wallMinHeight=2;
 var playerSpd=5;
 var playerSize=20;
-var frag=20;
+var frag=50;
 var pellets=5;
 var stunTime = 100;
 var invisibleTime = 150;
@@ -286,23 +286,23 @@ Bullet = function(parent,angle,type,distance){
 		var self = Entity(5);
 		assaultB(self);
 	}
-	else if(type==1){
+	else if(type == 1){
 		var self = Entity(3);
 		shotgunB(self);
 	}
-	else if(type==2){
+	else if(type == 2){
 		var self = Entity(2);
 		minigunB(self);
 	}
-	else if(type==3){
+	else if(type == 3){
 		var self = Entity(5);
 		grenadeB(self,distance);
 	}
-	else if(type==100){
+	else if(type == 100){
 		var self = Entity(5);
 		stunB(self);
 	}
-	else if(type==101){
+	else if(type == 101){
 		var self = Entity(2);
 		stunPellet(self);
 	}
@@ -316,51 +316,51 @@ Bullet = function(parent,angle,type,distance){
 	self.update = function(){
 		if(self.timer++ > self.deleteTime){
 			self.toRemove = true;
-			if(type===3){
-				for (i=0; i<frag; i++)
+			if(type === 3){
+				for (i = 0; i<frag; i++)
 					self.shootBullet(Math.random()*360,2)
 			}
-			if(type===100)
-				for (i=0; i<frag*5; i++)
-					self.shootBullet(Math.random()*360,101)
+			if(type === 100)
+				for (i=0; i<360; i++)
+					self.shootBullet(i,101)
 		}
 		super_update();
-		if(type===3){
+		if(type === 3){
 			self.spdX /= 1.02;
 			self.spdY /= 1.02;
 		}
-		if(type===100){
+		if(type === 100){
 			self.spdX /= 1.01;
 			self.spdY /= 1.01;
 		}
 		for(var i in Player.list){
-			var killed =false;
+			var killed = false;
 			var p = Player.list[i];
 			if(self.getDistance(p) < (p.size/2 + self.size/2) && self.parent !== p.id){
 				//IDE KELL MAJD A HP - ,stb
 				self.toRemove = true;
-				Player.list[i].hp-=self.dmg;
+				Player.list[i].hp -= self.dmg;
 				
 				if(self.stun){
-					Player.list[i].stunned=true;
+					Player.list[i].stunned = true;
 				}
 					
 				if (Player.list[i].hp <= 1)
 				{
 					killed = true; 
 					Player.list[i].hp = 10;
-					Player.list[i].x=Math.random()*WIDTH;
-					Player.list[i].y=Math.random()*HEIGHT;
+					Player.list[i].x = Math.random()*WIDTH;
+					Player.list[i].y = Math.random()*HEIGHT;
 					Player.list[i].score = Math.floor(Player.list[i].score/2);
 				}
 				for (var j in Player.list){
 					var p2 = Player.list[j];
 					if (self.parent === p2.id){
-						Player.list[j].score+=self.dmg;
+						Player.list[j].score += self.dmg;
 						if (killed){
-							Player.list[j].hp+=5;
+							Player.list[j].hp += 5;
 						}
-						killed=false;
+						killed = false;
 						break;
 					}
 				}

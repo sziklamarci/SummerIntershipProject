@@ -5,6 +5,7 @@ var assaultSpec2Distance=50;
 var shotgunSpec1CD=8;
 var shotgunSpec2CD=10;
 var minigunSpec1CD=12;
+var minigunSpec2CD=15;
 
 assault = function(self){
 	self.hp = 10;
@@ -63,6 +64,13 @@ minigun = function(self){
 	self.spec1=function(){
 		self.invisible = true;
 		self.spec1Timer=0;
+	}
+	
+	self.spec2CD=50*minigunSpec2CD;
+	self.spec2Timer=0;
+	self.spec2=function(){
+		self.ammo += 100;
+		self.spec2Timer = 0;
 	}
 	
 }
