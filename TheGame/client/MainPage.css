@@ -1,6 +1,7 @@
 body{
 	margin-top:60px;
     cursor: crosshair;
+    font-family: 'Bangers', cursive;
 }
 
 .topnav{
@@ -105,14 +106,32 @@ body{
 }
 
 #loginButton  {
+    left: 20px;
+    top: 350px;
     position: absolute;
-    z-index: 2;
+    background-color: #fff;
+    padding: 15px 25px;
+    font-size: 24px;
+    font-family: 'Bangers', cursive;
+    text-align: center;
+    font-weight: 500;
+    cursor: pointer;
+    outline: none;
+    color: #000;
+    border-width: 5px;
+    border-style: solid;
+    border-color: #000; 
+    border-radius: 15px;
+    transition-duration: 0.4s;
     
     
 }
 
 #loginButton:hover {
-    cursor: hand;
+    color: #fff;
+    background-color: #000;
+    
+   
 }
 
 #ctx {
@@ -123,6 +142,65 @@ body{
 
 #chooseName {
     position: absolute;
+    left: 20px;
+    top: 300px;
+    box-sizing: border-box;
+    width: 20%;
+    padding: 10px;
+    border-bottom: 3px;
+    border-top: 3px;
+    border-right: 0px;
+    border-left: 0px;
+    border-color: #fff;
+    border-style: solid;
+    transition-duration: 1s;
+   
+    font-family: 'Bangers', cursive;
+    border-bottom-right-radius: 0px;
+    border-top-right-radius: 0px;
+}
+
+#chooseName:focus {
+    outline: none;
+    border-bottom-right-radius: 0px;
+    border-top-right-radius: 0px;
+    border-bottom: 3px;
+    border-top: 3px;
+    border-right: 0px;
+    border-left: 0px;
+    border-color: #000;
+    border-style: solid;
+    
     
 }
+
+#leaderboardContainer {
+    font-size: 30px;
+    text-align: center;
+    color: #fff;
+    float: right;
+    position: fixed;
+    width: 20%;
+    right:0px;
+    top:0px;
+    background: #333;
+    height: 100%;
+    z-index: 5;
+    align-content: center;
+    align-items: center;
+    padding-top: 10px;
+}
+
+#leaderboard {
+    
+    position: relative;
+    background-color: #444;
+    z-index: 6;
+    
+    width: 80%;
+    height: 80%;
+    top: 10px;
+    display: inline-block;
+}
+
 
