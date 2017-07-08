@@ -62,6 +62,7 @@ minigun = function(self){
 	self.spec1CD=50*minigunSpec1CD;
 	self.spec1Timer=0;
 	self.spec1=function(){
+		self.maxSpd /= 2;
 		self.invisible = true;
 		self.spec1Timer=0;
 	}

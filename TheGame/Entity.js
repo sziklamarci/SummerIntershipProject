@@ -189,6 +189,7 @@ Player = function(id){
 		
 		if (self.invisible){
 			if(self.invisibleTimer++ > invisibleTime){
+				self.maxSpd = playerSpd;
 				self.invisible = false;
 				self.invisibleTimer = 0;
 			}
