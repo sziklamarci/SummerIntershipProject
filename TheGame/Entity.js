@@ -13,6 +13,7 @@ BulletType : 	0 assault
 				3 grenade
 				100 stun nade
 				101 stun pellet
+				102 mine
 */
 
 var wallMaxWidth=50;
@@ -307,6 +308,10 @@ Bullet = function(parent,angle,type,distance){
 		var self = Entity(2);
 		stunPellet(self);
 	}
+	else if(type == 102){
+		var self = Entity(8);
+		mine(self);
+	}
 	self.id = Math.random();
 	self.spdX = Math.cos(angle/180*Math.PI) * self.distance/50;
 	self.spdY = Math.sin(angle/180*Math.PI) * self.distance/50;
@@ -333,6 +338,9 @@ Bullet = function(parent,angle,type,distance){
 		if(type === 100){
 			self.spdX /= 1.01;
 			self.spdY /= 1.01;
+		}
+		if(type === 102 && self.timer > 75){
+			self.color = 'White';
 		}
 		for(var i in Player.list){
 			var killed = false;

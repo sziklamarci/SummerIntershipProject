@@ -36,3 +36,9 @@ stunPellet = function(self){
 	self.stun=true;
 	self.color = 'Gold';
 }
+mine = function(self){
+	self.deleteTime = 10000000;
+	self.dmg = 10;
+	self.distance = 0;
+	self.color = 'DarkMagenta';
+}

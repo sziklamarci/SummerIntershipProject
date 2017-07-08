@@ -1,11 +1,12 @@
 var assaultSpec1CD=20;
 var assaultSpec1HpRegen=2;
 var assaultSpec2CD=10;
-var assaultSpec2Distance=50;
-var shotgunSpec1CD=8;
-var shotgunSpec2CD=10;
-var minigunSpec1CD=12;
-var minigunSpec2CD=15;
+var assaultSpec2Distance = 50;
+var shotgunSpec1CD = 8;
+var shotgunSpec2CD = 10;
+var minigunSpec1CD = 12;
+var minigunSpec2CD = 15;
+var grenadeSpec1CD = 15;
 
 assault = function(self){
 	self.hp = 10;
@@ -81,4 +82,13 @@ grenade = function(self){
 	self.maxAmmo = 4;
 	self.reloadTime = 1000/50 * 6;
 	self.atkSpd = 15;
+	
+	self.spec1CD=50*grenadeSpec1CD;
+	self.spec1Timer=0;
+	self.spec1=function(){
+		var b = Bullet(self.id,self.mouseAngle,102,self.mouseDistance);
+		b.x = self.x;
+		b.y = self.y;
+		self.spec1Timer=0;
+	}
 }
