@@ -194,7 +194,7 @@ body{
 #leaderboard {
     
     position: relative;
-    background-color: #444;
+    background-color: #333;
     z-index: 6;
     width: 80%;
     height: 80%;
@@ -202,4 +202,22 @@ body{
     display: inline-block;
 }
 
+#leaderboardNameList {
+    position: relative;
+    left: -10px;
+    width: 50%;
+    font-size: 20px;
+    box-sizing: border-box;
+    float: left;
+}
 
+#leaderboardScoreList {
+    position: relative;
+    top: 1px;
+    padding-right: 20px;
+    float: right;
+    padding-left: 0px;
+    font-size: 20px;
+    width: 20%;
+    list-style-type: none;
+}
