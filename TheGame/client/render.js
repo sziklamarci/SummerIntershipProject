@@ -4,6 +4,8 @@ var chatForm = document.getElementById('chat-form');
 var ctx = document.getElementById("ctx").getContext("2d");
 ctx.font = '15px Arial';
 
+
+
 var socket = io();
 var hp = 10;
 var score = 0;
@@ -14,6 +16,9 @@ var spec1CD = 0;
 var spec1Timer = 0;
 var spec2CD = 0;
 var spec2Timer = 0;
+
+var playerName = localStorage.getItem('tarhely');
+socket.emit('setPlayerName',playerName);
 
 socket.on('playerHp',function(data){
 	hp = data;
@@ -46,16 +51,20 @@ socket.on('newPositions',function(data){
 	ctx.clearRect(0,0,800,500);
 	
 	for(var i = 0 ; i < data.player.length; i++){
+		ctx.font = '9px Arial'
 		if (data.player[i].number == num){
 			ctx.fillStyle = 'green';
 			if (data.player[i].invisible)
 				ctx.fillStyle = 'WhiteSmoke';
 		}else{
 			ctx.fillStyle = 'red';
-			if (data.player[i].invisible)
+			if (data.player[i].invisible){
 				ctx.fillStyle = 'White';
+				ctx.font = '0px Arial';
+			}
 		}
 			ctx.fillRect(data.player[i].x - (data.player[i].size/2),data.player[i].y- (data.player[i].size/2),data.player[i].size,data.player[i].size)
+			ctx.fillText(data.player[i].name, data.player[i].x-5,data.player[i].y - (data.player[i].size+5));
 		}
 	for(var i = 0 ; i < data.bullet.length; i++){
 		ctx.fillStyle = data.bullet[i].color;
@@ -66,6 +75,8 @@ socket.on('newPositions',function(data){
 		ctx.fillRect(data.wall[i].x-(data.wall[i].width/2),data.wall[i].y-(data.wall[i].height/2),data.wall[i].width,data.wall[i].height);
 	}
 	ctx.fillStyle = 'black';
+	
+	ctx.font = '15px Arial';
 	ctx.fillText("HP: " + hp, 5,15);
 	ctx.fillText("Q: " + Math.round(spec1Timer/spec1CD*100) + "%", 80,15);
 	ctx.fillText("E: " + Math.round(spec2Timer/spec2CD*100) + "%", 140,15);

@@ -1,7 +1,7 @@
 var assaultSpec1CD=20;
 var assaultSpec1HpRegen=2;
 var assaultSpec2CD=10;
-var assaultSpec2Distance = 50;
+var assaultSpec2Distance = 100;
 var shotgunSpec1CD = 8;
 var shotgunSpec2CD = 10;
 var minigunSpec1CD = 12;
@@ -33,8 +33,8 @@ assault = function(self){
 shotgun = function(self){
 	self.hp = 15;
 	self.maxAmmo = 8;
-	self.reloadTime = 1000/50 * 6;
-	self.atkSpd = 9;
+	self.reloadTime = 1000/50 * 5;
+	self.atkSpd = 8;
 	self.spec1Toggle = false;
 	
 	self.spec1CD=50*shotgunSpec1CD;
