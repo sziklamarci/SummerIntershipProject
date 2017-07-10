@@ -22,7 +22,7 @@ var wallMaxHeight=50;
 var wallMinHeight=2;
 var playerSpd=5;
 var playerSize=20;
-var frag=50;
+var frag=30;
 var pellets=5;
 var stunTime = 100;
 var invisibleTime = 150;
@@ -134,9 +134,10 @@ Wall = function(){
 }
 Wall.list = {};
 
-Player = function(id){
+Player = function(id,name){
 	var self = Entity(playerSize);
 	self.id = id;
+	self.name = "";
 	self.type = Math.round(Math.random()*3);
 	if (self.type==0){
 		assault(self);

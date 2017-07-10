@@ -25,6 +25,7 @@ testCollisionRectRect = function(rect1,rect2){
 		&& rect2.y <= rect1.y + rect1.height;
 }
 
+
 Player.onConnect = function(socket){
 	var player = Player(socket.id);
 	socket.on('keyPress',function(data){
@@ -59,8 +60,11 @@ Player.onConnect = function(socket){
 		socket.emit('playerSpec2CD',player.spec2CD);
 		socket.emit('playerSpec2Timer',player.spec2Timer);
 	});
-	
 	console.log("client connected.");
+	
+	socket.on('setPlayerName',function(data){
+			Player.list[socket.id].name = data;
+	});
 }
 Player.onDisconnect = function(socket){
 	delete Player.list[socket.id];
@@ -76,9 +80,11 @@ Player.update = function(){
 			y:player.y,
 			size:player.size,
 			number:player.number,
+			name:player.name,
 			invisible:player.invisible
-		});		
+		});
 	}
+	
 	return pack;
 }
 
@@ -128,7 +134,7 @@ io.sockets.on('connection', function(socket){
 		Player.onDisconnect(socket);
 	});
 	socket.on('sendMsgToServer',function(data){
-		var playerName = ("" + socket.id).slice(2,7);
+		var playerName = Player.list[socket.id].name;
 		for(var i in SOCKET_LIST){
 			SOCKET_LIST[i].emit('addToChat',playerName + ': ' + data);
 		}
