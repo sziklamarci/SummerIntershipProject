@@ -3,7 +3,8 @@ var chatInput = document.getElementById('chat-input');
 var chatForm = document.getElementById('chat-form');
 var ctx = document.getElementById("ctx").getContext("2d");
 ctx.font = '15px Arial';
-
+var leaderboardNameList = document.getElementById("leaderboardNameList"); 
+var leaderboardScoreList = document.getElementById("leaderboardScoreList");
 
 
 var socket = io();
@@ -18,6 +19,14 @@ var spec2CD = 0;
 var spec2Timer = 0;
 
 var playerName = sessionStorage.getItem('tarhely');
+<<<<<<< HEAD
+=======
+
+if (playerName === "")
+    {
+        playerName = 'unnamed';
+    }
+>>>>>>> 6bc96c5401d327a5c8448e3440e4cc2b15438647
 socket.emit('setPlayerName',playerName);
 
 socket.on('playerHp',function(data){
@@ -49,7 +58,7 @@ socket.on('playerSpec2Timer',function(data){
 });
 socket.on('newPositions',function(data){
 	ctx.clearRect(0,0,800,500);
-	
+	leaderboardClear();
 	for(var i = 0 ; i < data.player.length; i++){
 		ctx.font = '9px Arial'
 		if (data.player[i].number == num){
@@ -65,7 +74,18 @@ socket.on('newPositions',function(data){
 		}
 			ctx.fillRect(data.player[i].x - (data.player[i].size/2),data.player[i].y- (data.player[i].size/2),data.player[i].size,data.player[i].size)
 			ctx.fillText(data.player[i].name, data.player[i].x-5,data.player[i].y - (data.player[i].size+5));
+        
+        leaderboardUpdate(data.player[i].name, data.player[i].score); 
+        
+        
+        
+        
 		}
+   
+    
+    
+    
+    
 	for(var i = 0 ; i < data.bullet.length; i++){
 		ctx.fillStyle = data.bullet[i].color;
 		ctx.fillRect(data.bullet[i].x-(data.bullet[i].size/2),data.bullet[i].y-(data.bullet[i].size/2),data.bullet[i].size,data.bullet[i].size);
@@ -151,3 +171,25 @@ document.onmousemove = function(event){
     
 	socket.emit('keyPress',{inputId:'mouseAngle',x:x,y:y});
 }
+
+//////////////////// LEADERBOARD ///////////////////////
+
+function leaderboardUpdate(nameListElement, scoreListElement) {
+    
+   
+    
+    var li = document.createElement("li"); 
+    li.appendChild(document.createTextNode(nameListElement));
+    leaderboardNameList.appendChild(li);
+    
+    var li2 = document.createElement("li"); 
+    li2.appendChild(document.createTextNode(scoreListElement));
+    leaderboardScoreList.appendChild(li2);
+}
+
+function leaderboardClear() {
+    leaderboardNameList.innerHTML = "";
+    leaderboardScoreList.innerHTML = "";
+}
+
+
