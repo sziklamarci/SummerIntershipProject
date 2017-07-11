@@ -17,7 +17,7 @@ var spec1Timer = 0;
 var spec2CD = 0;
 var spec2Timer = 0;
 
-var playerName = localStorage.getItem('tarhely');
+var playerName = sessionStorage.getItem('tarhely');
 socket.emit('setPlayerName',playerName);
 
 socket.on('playerHp',function(data){

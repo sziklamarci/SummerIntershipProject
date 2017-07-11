@@ -1,3 +1,5 @@
+require('./Spells')
+
 var assaultSpec1CD=20;
 var assaultSpec1HpRegen=2;
 var assaultSpec2CD=10;
@@ -71,7 +73,7 @@ minigun = function(self){
 	self.spec2CD=50*minigunSpec2CD;
 	self.spec2Timer=0;
 	self.spec2=function(){
-		self.ammo += 100;
+		self.ammo += self.maxAmmo;
 		self.spec2Timer = 0;
 	}
 	

@@ -81,6 +81,7 @@ Player.update = function(){
 			size:player.size,
 			number:player.number,
 			name:player.name,
+			score:player.score,
 			invisible:player.invisible
 		});
 	}
