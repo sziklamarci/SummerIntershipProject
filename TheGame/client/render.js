@@ -19,14 +19,11 @@ var spec2CD = 0;
 var spec2Timer = 0;
 
 var playerName = sessionStorage.getItem('tarhely');
-<<<<<<< HEAD
-=======
 
 if (playerName === "")
     {
         playerName = 'unnamed';
     }
->>>>>>> 6bc96c5401d327a5c8448e3440e4cc2b15438647
 socket.emit('setPlayerName',playerName);
 
 socket.on('playerHp',function(data){
