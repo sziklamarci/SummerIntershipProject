@@ -81,6 +81,7 @@ Player.update = function(){
 			size:player.size,
 			number:player.number,
 			name:player.name,
+            score:player.score,
 			invisible:player.invisible
 		});
 	}
@@ -180,7 +181,7 @@ setInterval(function(){
 		var socket = SOCKET_LIST[i];
 		socket.emit('newPositions',pack);
 	}
-	
 },1000/50);
+
 
 
