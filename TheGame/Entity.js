@@ -6,7 +6,7 @@ PlayerType :	0 assault
 				1 shotgun
 				2 minigun
 				3 grenade
-				
+
 BulletType : 	0 assault
 				1 shotgun
 				2 minigun
@@ -15,11 +15,9 @@ BulletType : 	0 assault
 				101 stun pellet
 				102 mine
 */
-
-var wallMaxWidth=50;
-var wallMinWidth=2;
-var wallMaxHeight=50;
-var wallMinHeight=2;
+var wallWidth = 6;
+var wallMaxLenght=50;
+var wallMinLenght=10;
 var playerSpd=5;
 var playerSize=20;
 var frag=30;
@@ -53,15 +51,22 @@ Entity = function(size){
 	return self;
 }
 
-Wall = function(){
+Wall = function(x,y,lenght,type){
 	var self = Entity(10);
+	self.x = x;
+	self.y = y;
 	if(self.y<50)
 		self.y=Math.random()*HEIGHT;
 	self.id = Math.random();
-	self.width = Math.floor(wallMinWidth+Math.random()*wallMaxWidth);
-	self.height = Math.floor(wallMinHeight+Math.random()*wallMaxHeight);
+	if(type==0){
+		self.width = wallWidth;
+		self.height = lenght;
+	}else if(type==1){
+		self.height = wallWidth;
+		self.width = lenght;
+	}
 	self.toRemove = false;
-	
+
 	var super_update = self.update;
 	self.update = function(){
 		self.collision();
@@ -114,7 +119,7 @@ Wall = function(){
 					height:b.size+4,
 				}
 			}
-			
+
 			if(b.type==4 || b.type==100){
 				if (testCollisionRectRect(rect1,rect2) && rect1.x < rect2.x && rect2.x+rect2.width < rect1.x+rect.width){
 					Bullet.list[i].spdY *= -1;
@@ -124,11 +129,11 @@ Wall = function(){
 			else
 			if (testCollisionRectRect(rect1,rect2)){
 					Bullet.list[i].timer=Bullet.list[i].deleteTime+1;
-					
+
 			}
 		}
 	}
-	
+
 	Wall.list[self.id] = self;
 	return self;
 }
@@ -170,15 +175,15 @@ Player = function(id,name){
 	self.ammo = self.maxAmmo;
 	self.reloadTimer = 0;
 	self.score = 0;
-	
-		
-	
+
+
+
 	var super_update = self.update;
 	self.update = function(){
 		self.updateSpd();
 		self.bounding();
 		super_update();
-		
+
 		if (self.stunned){
 			self.maxSpd=0;
 			self.atkTimer--;
@@ -188,7 +193,7 @@ Player = function(id,name){
 				self.maxSpd=playerSpd;
 			}
 		}
-		
+
 		if (self.invisible){
 			if(self.invisibleTimer++ > invisibleTime){
 				self.maxSpd = playerSpd;
@@ -196,10 +201,10 @@ Player = function(id,name){
 				self.invisibleTimer = 0;
 			}
 		}
-		
+
 		if(self.atkTimer<self.atkSpd)
 			self.atkTimer++;
-		
+
 		if(self.pressingAttack && self.atkTimer >= self.atkSpd && self.ammo > 0){
 			if(self.type==0){
 				self.shootBullet(self.mouseAngle);
@@ -227,17 +232,17 @@ Player = function(id,name){
 				self.ammo--;
 			}
 		}
-		
+
 		if(self.spec1Timer<self.spec1CD)
 			self.spec1Timer++;
 		if(self.pressingSpec1&&self.spec1Timer>=self.spec1CD)
 			self.spec1();
-		
+
 		if(self.spec2Timer<self.spec2CD)
 			self.spec2Timer++;
 		if(self.pressingSpec2&&self.spec2Timer>=self.spec2CD)
 			self.spec2();
-		
+
 		if (self.ammo == 0){
 			if (self.reloadTimer++ >= self.reloadTime){
 				self.ammo = self.maxAmmo;
@@ -250,8 +255,8 @@ Player = function(id,name){
 		b.x = self.x;
 		b.y = self.y;
 	}
-	
-	
+
+
 	self.bounding = function(){
 		if(self.x<0 + self.size/2)
 			self.x=0+self.size/2;
@@ -263,7 +268,7 @@ Player = function(id,name){
 			self.y=HEIGHT-self.size/2;
 	}
 
-	
+
 	self.updateSpd = function(){
 		if(self.pressingRight && !self.pressingLeft)
 			self.spdX = self.maxSpd;
@@ -271,13 +276,13 @@ Player = function(id,name){
 			self.spdX = -self.maxSpd;
 		else
 			self.spdX = 0;
-		
+
 		if(self.pressingUp && !self.pressingDown)
 			self.spdY = -self.maxSpd;
 		else if(self.pressingDown && !self.pressingUp)
 			self.spdY = self.maxSpd;
 		else
-			self.spdY = 0;		
+			self.spdY = 0;
 	}
 	Player.list[id] = self;
 	return self;
@@ -310,7 +315,7 @@ Bullet = function(parent,angle,type,distance){
 		stunPellet(self);
 	}
 	else if(type == 102){
-		var self = Entity(8);
+		var self = Entity(16);
 		mine(self);
 	}
 	self.id = Math.random();
@@ -350,14 +355,14 @@ Bullet = function(parent,angle,type,distance){
 				//IDE KELL MAJD A HP - ,stb
 				self.toRemove = true;
 				Player.list[i].hp -= self.dmg;
-				
+
 				if(self.stun){
 					Player.list[i].stunned = true;
 				}
-					
+
 				if (Player.list[i].hp <= 1)
 				{
-					killed = true; 
+					killed = true;
 					Player.list[i].hp = 10;
 					Player.list[i].x = Math.random()*WIDTH;
 					Player.list[i].y = Math.random()*HEIGHT;
@@ -377,15 +382,15 @@ Bullet = function(parent,angle,type,distance){
 			}
 		}
 	}
-	
+
 	self.shootBullet = function(angle,type){
 		var b = Bullet(self.parent,angle,type,400);
 		b.x = self.x;
 		b.y = self.y;
 	}
-	
+
 	Bullet.list[self.id] = self;
-	
+
 	return self;
 }
 Bullet.list = {};

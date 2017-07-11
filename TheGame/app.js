@@ -19,7 +19,7 @@ var MapChangeTimer = 1;
 var Size = 20;
 
 testCollisionRectRect = function(rect1,rect2){
-	return rect1.x <= rect2.x+rect2.width 
+	return rect1.x <= rect2.x+rect2.width
 		&& rect2.x <= rect1.x+rect1.width
 		&& rect1.y <= rect2.y + rect2.height
 		&& rect2.y <= rect1.y + rect1.height;
@@ -50,7 +50,7 @@ Player.onConnect = function(socket){
 			player.mouseAngle = angle;
 			player.mouseDistance = Math.sqrt(Math.pow(x,2) + Math.pow(y,2));
 		}
-		
+
 		socket.emit('playerHp', player.hp);
 		socket.emit('playerScore', player.score);
 		socket.emit('playerNum', player.number);
@@ -61,7 +61,7 @@ Player.onConnect = function(socket){
 		socket.emit('playerSpec2Timer',player.spec2Timer);
 	});
 	console.log("client connected.");
-	
+
 	socket.on('setPlayerName',function(data){
 			Player.list[socket.id].name = data;
 	});
@@ -85,7 +85,7 @@ Player.update = function(){
 			invisible:player.invisible
 		});
 	}
-	
+
 	return pack;
 }
 
@@ -102,7 +102,7 @@ Bullet.update = function(){
 				y:bullet.y,
 				size:bullet.size,
 				color:bullet.color
-			});		
+			});
 	}
 	return pack;
 }
@@ -129,7 +129,7 @@ io.sockets.on('connection', function(socket){
 	socket.id = Math.random();
 	SOCKET_LIST[socket.id] = socket;
 	Player.onConnect(socket);
-	
+
 	socket.on('disconnect',function(){
 		delete SOCKET_LIST[socket.id];
 		Player.onDisconnect(socket);
@@ -140,15 +140,15 @@ io.sockets.on('connection', function(socket){
 			SOCKET_LIST[i].emit('addToChat',playerName + ': ' + data);
 		}
 	});
-	
+
 	socket.on('evalServer',function(data){
 		if(!DEBUG)
 			return;
 		var res = eval(data);
-		socket.emit('evalAnswer',res);		
+		socket.emit('evalAnswer',res);
 	});
-	
-	
+
+
 });
 
 setInterval(function(){
@@ -156,11 +156,33 @@ setInterval(function(){
 		for(var i in Wall.list){
 			delete Wall.list[i];
 		}
-		Wall();
-		Wall();
-		Wall();
-		Wall();
-		Wall();
+		var wallCounter=Math.round(2+Math.random()*5);
+		var x;
+		var y;
+		var lenght;
+		var type;
+		var nextType;
+		x = Math.floor(10+Math.random()*(WIDTH-10));
+		y = Math.floor(30+Math.random()*(HEIGHT-40));
+		lenght = 10 + Math.floor(Math.random()*50);
+		type = Math.round(Math.random());
+		do{
+			Wall(x,y,lenght,type);
+			if(type==0){
+					y += lenght/2;
+					lenght = 10 + Math.floor(Math.random()*50);
+					x += lenght/2;
+					type = 1;
+			}else if(type==1){
+					x += lenght/2;
+					lenght = 10 + Math.floor(Math.random()*50);
+					y += lenght/2;
+					type = 0;
+			}
+			console.log("Made a wall");
+			wallCounter--;
+		}while (wallCounter >= 0);
+		//Wall(Wall.list[Wall.list.length-1].x+Wall.list[Wall.list.length-1].width,Wall.list[Wall.list.length-1].y+Wall.list[Wall.list.length-1].height)
 		MapChangeTimer = MapChangeTime;
 	}
 	for(var i in SOCKET_LIST){
@@ -170,18 +192,15 @@ setInterval(function(){
 },1000);
 
 setInterval(function(){
-	
+
 	var pack = {
 		player:Player.update(),
 		bullet:Bullet.update(),
 		wall:Wall.update(),
 	}
-	
+
 	for(var i in SOCKET_LIST){
 		var socket = SOCKET_LIST[i];
 		socket.emit('newPositions',pack);
 	}
 },1000/50);
-
-
-
