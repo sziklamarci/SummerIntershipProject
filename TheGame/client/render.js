@@ -5,7 +5,8 @@ var ctx = document.getElementById("ctx").getContext("2d");
 ctx.font = '15px Arial';
 var leaderboardNameList = document.getElementById("leaderboardNameList"); 
 var leaderboardScoreList = document.getElementById("leaderboardScoreList");
-
+var lbScores = [];
+var lbNames =[];
 
 var socket = io();
 var hp = 10;
@@ -55,7 +56,7 @@ socket.on('playerSpec2Timer',function(data){
 });
 socket.on('newPositions',function(data){
 	ctx.clearRect(0,0,800,500);
-	leaderboardClear();
+	
 	for(var i = 0 ; i < data.player.length; i++){
 		ctx.font = '9px Arial'
 		if (data.player[i].number == num){
@@ -71,18 +72,14 @@ socket.on('newPositions',function(data){
 		}
 			ctx.fillRect(data.player[i].x - (data.player[i].size/2),data.player[i].y- (data.player[i].size/2),data.player[i].size,data.player[i].size)
 			ctx.fillText(data.player[i].name, data.player[i].x-5,data.player[i].y - (data.player[i].size+5));
-        
-        leaderboardUpdate(data.player[i].name, data.player[i].score); 
-        
-        
-        
-        
-		}
+            
+            lbScores.push(data.player[i].score);
+            lbNames.push(data.player[i].name);
+    }
+    sortList(); 
+    lbNames = [];
+    lbScores = [];
    
-    
-    
-    
-    
 	for(var i = 0 ; i < data.bullet.length; i++){
 		ctx.fillStyle = data.bullet[i].color;
 		ctx.fillRect(data.bullet[i].x-(data.bullet[i].size/2),data.bullet[i].y-(data.bullet[i].size/2),data.bullet[i].size,data.bullet[i].size);
@@ -100,6 +97,7 @@ socket.on('newPositions',function(data){
 	ctx.fillText("Time to change: " + TimeToChange, 390,15);
 	ctx.fillText("Ammo: " + ammo, 590, 15);
 	ctx.fillText("score: " + score, 690,15);
+    
 });
 	
 	
@@ -171,22 +169,48 @@ document.onmousemove = function(event){
 
 //////////////////// LEADERBOARD ///////////////////////
 
-function leaderboardUpdate(nameListElement, scoreListElement) {
-    
-   
-    
+function leaderboardUpdate() {
+
+    leaderboardClear();
+    for(i = 0; i < lbScores.length; i++){
+        
     var li = document.createElement("li"); 
-    li.appendChild(document.createTextNode(nameListElement));
+    li.appendChild(document.createTextNode(lbNames[i]));
     leaderboardNameList.appendChild(li);
     
     var li2 = document.createElement("li"); 
-    li2.appendChild(document.createTextNode(scoreListElement));
+    li2.appendChild(document.createTextNode(lbScores[i]));
     leaderboardScoreList.appendChild(li2);
+        
+    }
+    
+    
 }
 
 function leaderboardClear() {
     leaderboardNameList.innerHTML = "";
     leaderboardScoreList.innerHTML = "";
 }
+
+function sortList() {
+    var tarolo="";
+    for (i=0; i<lbScores.length; i++)
+        {
+        for (j=i+1; j<=lbScores.length-1; j++)
+            {
+            if (lbScores[i] < lbScores[j])
+                {
+                tarolo = lbScores[i];
+                lbScores[i] = lbScores[j];
+                lbScores[j] = tarolo;
+                    
+                tarolo = lbNames[i];
+                lbNames[i] = lbNames[j];
+                lbNames[j] = tarolo;
+                }
+            }
+        }
+    leaderboardUpdate();
+}        
 
 
