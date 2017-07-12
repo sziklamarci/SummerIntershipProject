@@ -176,11 +176,26 @@ function leaderboardUpdate() {
         
     var li = document.createElement("li"); 
     li.appendChild(document.createTextNode(lbNames[i]));
+        if  (lbScores[i] === score && lbNames[i] === playerName)
+        {
+            li.style.color = '#eaaa3a';
+        }
+    else {
+        li.style.color = '#fff';
+    }
     leaderboardNameList.appendChild(li);
     
     var li2 = document.createElement("li"); 
     li2.appendChild(document.createTextNode(lbScores[i]));
+    if  (lbScores[i] === score && lbNames[i] === playerName)
+        {
+            li2.style.color = '#eaaa3a';
+        }
+    else {
+        li2.style.color = '#fff';
+    }
     leaderboardScoreList.appendChild(li2);
+    
         
     }
     
