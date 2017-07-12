@@ -59,6 +59,8 @@ Player.onConnect = function(socket){
 		socket.emit('playerSpec1Timer',player.spec1Timer);
 		socket.emit('playerSpec2CD',player.spec2CD);
 		socket.emit('playerSpec2Timer',player.spec2Timer);
+		socket.emit('playerDead',player.dead);
+		socket.emit('playerDeadTimer',player.deadTimer);
 	});
 	console.log("client connected.");
 
@@ -161,6 +163,11 @@ setInterval(function(){
 		generateHouse();
 		//Wall(Wall.list[Wall.list.length-1].x+Wall.list[Wall.list.length-1].width,Wall.list[Wall.list.length-1].y+Wall.list[Wall.list.length-1].height)
 		MapChangeTimer = MapChangeTime;
+	}
+	for (var i in Player.list)
+	{
+		if(Player.list[i].dead)
+			Player.list[i].deadTimer--;
 	}
 	for(var i in SOCKET_LIST){
 		var socket = SOCKET_LIST[i];

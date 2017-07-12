@@ -201,7 +201,8 @@ Player = function(id,name){
 	self.ammo = self.maxAmmo;
 	self.reloadTimer = 0;
 	self.score = 0;
-
+	self.dead = false;
+	self.deadTimer = 5;
 
 
 	var super_update = self.update;
@@ -209,6 +210,19 @@ Player = function(id,name){
 		self.updateSpd();
 		self.bounding();
 		super_update();
+
+		if (self.dead){
+			self.hp = 10;
+			self.x = 2000;
+			self.y = 2000;
+			if (self.deadTimer<1){
+				self.x = Math.random()*WIDTH;
+				self.y = Math.random()*HEIGHT;
+				self.score = Math.round(self.score/2);
+				self.deadTimer=5;
+				self.dead=false;
+			}
+		}
 
 		if (self.stunned){
 			self.maxSpd=0;
@@ -389,10 +403,7 @@ Bullet = function(parent,angle,type,distance){
 				if (Player.list[i].hp <= 1)
 				{
 					killed = true;
-					Player.list[i].hp = 10;
-					Player.list[i].x = Math.random()*WIDTH;
-					Player.list[i].y = Math.random()*HEIGHT;
-					Player.list[i].score = Math.floor(Player.list[i].score/2);
+					Player.list[i].dead = true;
 				}
 				for (var j in Player.list){
 					var p2 = Player.list[j];
