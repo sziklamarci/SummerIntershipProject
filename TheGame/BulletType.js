@@ -32,7 +32,7 @@ stunB = function(self){
 stunPellet = function(self){
 	self.deleteTime = 8;
 	self.dmg = 0;
-	self.distance=500;
+	self.distance=800;
 	self.stun=true;
 	self.color = 'Gold';
 }

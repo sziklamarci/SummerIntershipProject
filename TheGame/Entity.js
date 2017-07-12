@@ -55,8 +55,6 @@ Wall = function(x,y,lenght,type){
 	var self = Entity(10);
 	self.x = x;
 	self.y = y;
-	if(self.y<50)
-		self.y=Math.random()*HEIGHT;
 	self.id = Math.random();
 	if(type==0){
 		self.width = wallWidth;
@@ -88,13 +86,13 @@ Wall = function(x,y,lenght,type){
 				height:Player.list[i].size,
 			}
 			if (testCollisionRectRect(rect1,rect2) && Player.list[i].pressingRight)
-				Player.list[i].x = rect1.x-Player.list[i].size/2-1;
-			else if (testCollisionRectRect(rect1,rect2) && Player.list[i].pressingLeft)
-				Player.list[i].x = rect1.x+rect1.width+Player.list[i].size/2+1;
-			else if (testCollisionRectRect(rect1,rect2) && Player.list[i].pressingDown)
-				Player.list[i].y = rect1.y-Player.list[i].size/2-1;
-			else if (testCollisionRectRect(rect1,rect2) && Player.list[i].pressingUp)
-				Player.list[i].y = rect1.y+rect1.height+Player.list[i].size/2+1;
+				Player.list[i].x -= Player.list[i].size/2;
+			if (testCollisionRectRect(rect1,rect2) && Player.list[i].pressingLeft)
+				Player.list[i].x += Player.list[i].size/2;
+			if (testCollisionRectRect(rect1,rect2) && Player.list[i].pressingDown)
+				Player.list[i].y -= Player.list[i].size/2;
+			if (testCollisionRectRect(rect1,rect2) && Player.list[i].pressingUp)
+				Player.list[i].y += Player.list[i].size/2;
 		}
 		for(var i in Bullet.list){
 			var b = Bullet.list[i];
@@ -138,6 +136,34 @@ Wall = function(x,y,lenght,type){
 	return self;
 }
 Wall.list = {};
+
+generateHouse = function(){
+	var x;
+	var y;
+	var lenght;
+	var type;
+	var nextType;
+	x = Math.floor(10+Math.random()*(WIDTH-70));
+	y = Math.floor(50+Math.random()*(HEIGHT-90));
+	lenght = 50 + Math.floor(Math.random()*150);
+	type = 1;
+	Wall(x,y,lenght/2,type);
+	x += 50 + lenght/2;
+	Wall(x,y,lenght/2,type);
+	type = 0;
+	x += lenght/3;
+	y += lenght/2;
+	Wall(x,y,lenght,type);
+	type = 1;
+	y += lenght/2;
+	x -= lenght;
+	Wall(x,y,lenght+50,type);
+	type = 0;
+	x -= (lenght/2+25);
+	y -= lenght/2;
+	Wall(x,y,lenght,type);
+
+}
 
 Player = function(id,name){
 	var self = Entity(playerSize);

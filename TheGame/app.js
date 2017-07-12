@@ -156,32 +156,9 @@ setInterval(function(){
 		for(var i in Wall.list){
 			delete Wall.list[i];
 		}
-		var wallCounter=Math.round(2+Math.random()*5);
-		var x;
-		var y;
-		var lenght;
-		var type;
-		var nextType;
-		x = Math.floor(10+Math.random()*(WIDTH-10));
-		y = Math.floor(30+Math.random()*(HEIGHT-40));
-		lenght = 10 + Math.floor(Math.random()*50);
-		type = Math.round(Math.random());
-		do{
-			Wall(x,y,lenght,type);
-			if(type==0){
-					y += lenght/2;
-					lenght = 10 + Math.floor(Math.random()*50);
-					x += lenght/2;
-					type = 1;
-			}else if(type==1){
-					x += lenght/2;
-					lenght = 10 + Math.floor(Math.random()*50);
-					y += lenght/2;
-					type = 0;
-			}
-			console.log("Made a wall");
-			wallCounter--;
-		}while (wallCounter >= 0);
+		generateHouse();
+		generateHouse();
+		generateHouse();
 		//Wall(Wall.list[Wall.list.length-1].x+Wall.list[Wall.list.length-1].width,Wall.list[Wall.list.length-1].y+Wall.list[Wall.list.length-1].height)
 		MapChangeTimer = MapChangeTime;
 	}
