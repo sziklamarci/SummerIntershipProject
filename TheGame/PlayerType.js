@@ -1,7 +1,7 @@
 require('./Spells')
 
 var assaultSpec1CD=20;
-var assaultSpec1HpRegen=2;
+var assaultSpec1HpRegen=4;
 var assaultSpec2CD=10;
 var assaultSpec2Distance = 100;
 var shotgunSpec1CD = 8;
@@ -15,14 +15,14 @@ assault = function(self){
 	self.maxAmmo = 30;
 	self.reloadTime = 1000/50 * 4;
 	self.atkSpd = 2;
-	
+
 	self.spec1CD=50*assaultSpec1CD;
 	self.spec1Timer=0;
 	self.spec1=function(){
 		self.hp+=assaultSpec1HpRegen;
 		self.spec1Timer=0;
 	}
-	
+
 	self.spec2CD=50*assaultSpec2CD;
 	self.spec2Timer=0;
 	self.spec2=function(){
@@ -38,14 +38,14 @@ shotgun = function(self){
 	self.reloadTime = 1000/50 * 5;
 	self.atkSpd = 8;
 	self.spec1Toggle = false;
-	
+
 	self.spec1CD=50*shotgunSpec1CD;
 	self.spec1Timer=0;
 	self.spec1=function(){
 		self.spec1Toggle = true;
 		self.spec1Timer=0;
 	}
-	
+
 	self.spec2CD=50*shotgunSpec2CD;
 	self.spec2Timer=0;
 	self.spec2=function(){
@@ -61,7 +61,7 @@ minigun = function(self){
 	self.maxAmmo = 100;
 	self.reloadTime = 1000/50 * 8;
 	self.atkSpd = 1;
-	
+
 	self.spec1CD=50*minigunSpec1CD;
 	self.spec1Timer=0;
 	self.spec1=function(){
@@ -69,22 +69,22 @@ minigun = function(self){
 		self.invisible = true;
 		self.spec1Timer=0;
 	}
-	
+
 	self.spec2CD=50*minigunSpec2CD;
 	self.spec2Timer=0;
 	self.spec2=function(){
 		self.ammo += self.maxAmmo;
 		self.spec2Timer = 0;
 	}
-	
+
 }
 
 grenade = function(self){
 	self.hp = 10;
-	self.maxAmmo = 4;
+	self.maxAmmo = 5;
 	self.reloadTime = 1000/50 * 6;
 	self.atkSpd = 15;
-	
+
 	self.spec1CD=50*grenadeSpec1CD;
 	self.spec1Timer=0;
 	self.spec1=function(){

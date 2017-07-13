@@ -20,6 +20,9 @@ var spec2CD = 0;
 var spec2Timer = 0;
 var dead = false;
 var deadTimer = 0;
+var killerName = "";
+var killedName = "";
+var killFeedOppacity = 1000;
 
 var playerName = sessionStorage.getItem('tarhely');
 
@@ -62,7 +65,13 @@ socket.on('playerDead',function(data){
 socket.on('playerDeadTimer',function(data){
 	deadTimer = data;
 });
-
+socket.on('killerName',function(data){
+  killerName = data;
+});
+socket.on('killedName',function(data){
+  killedName = data;
+  killFeedOppacity = 1000;
+});
 socket.on('newPositions',function(data){
 	ctx.clearRect(0,0,800,500);
 
@@ -106,6 +115,14 @@ socket.on('newPositions',function(data){
 	ctx.fillText("Time to change: " + TimeToChange, 390,15);
 	ctx.fillText("Ammo: " + ammo, 590, 15);
 	ctx.fillText("score: " + score, 690,15);
+
+  ctx.fillStyle = "rgba(0, 0, 0,"+ killFeedOppacity/1000 +")";
+  if (killerName!=""){
+    ctx.fillText(killerName + " killed " + killedName, 590,45);
+    if (killFeedOppacity>1){
+      killFeedOppacity-=6;
+    }
+  }
 
   if(dead){
     ctx.fillStyle = "rgba(0, 0, 0, 0.5)";

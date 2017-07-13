@@ -161,7 +161,6 @@ setInterval(function(){
 		generateHouse();
 		generateHouse();
 		generateHouse();
-		//Wall(Wall.list[Wall.list.length-1].x+Wall.list[Wall.list.length-1].width,Wall.list[Wall.list.length-1].y+Wall.list[Wall.list.length-1].height)
 		MapChangeTimer = MapChangeTime;
 	}
 	for (var i in Player.list)
@@ -186,5 +185,10 @@ setInterval(function(){
 	for(var i in SOCKET_LIST){
 		var socket = SOCKET_LIST[i];
 		socket.emit('newPositions',pack);
+		if (newKillFeed){
+			socket.emit('killerName',killerName);
+			socket.emit('killedName',killedName);
+		}
 	}
+	newKillFeed=false;
 },1000/50);

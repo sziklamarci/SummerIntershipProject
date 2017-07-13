@@ -20,13 +20,14 @@ var wallMaxLenght=50;
 var wallMinLenght=10;
 var playerSpd=5;
 var playerSize=20;
-var frag=30;
+var frag=22;
 var pellets=5;
 var stunTime = 100;
 var invisibleTime = 150;
 var shotgunSpread = 20;
 var minigunSpread = 20;
 var grenadeSpread = 10;
+newKillFeed = false;
 
 
 Entity = function(size){
@@ -370,7 +371,7 @@ Bullet = function(parent,angle,type,distance){
 			self.toRemove = true;
 			if(type === 3){
 				for (i = 0; i<frag; i++)
-					self.shootBullet(Math.random()*360,2)
+					self.shootBullet(i*360/frag,2)
 			}
 			if(type === 100)
 				for (i=0; i<360; i++)
@@ -411,6 +412,9 @@ Bullet = function(parent,angle,type,distance){
 						Player.list[j].score += self.dmg;
 						if (killed){
 							Player.list[j].hp += 5;
+							Player.list[i].ammo = Player.list[i].maxAmmo; 
+							killFeed(Player.list[j].name,Player.list[i].name)
+							newKillFeed = true;
 						}
 						killed = false;
 						break;
@@ -431,3 +435,11 @@ Bullet = function(parent,angle,type,distance){
 	return self;
 }
 Bullet.list = {};
+
+killerName="";
+killedName="";
+
+killFeed = function(killerN, killedN){
+	killerName=killerN;
+	killedName=killedN;
+}
