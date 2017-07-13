@@ -1,3 +1,7 @@
+html{
+    cursor: crosshair;
+}
+
 body{
 	margin-top:60px;
     cursor: crosshair;
@@ -221,4 +225,10 @@ body{
     font-size: 20px;
     width: 20%;
     list-style-type: none;
+}
+
+#tutorialimg {
+    position: absolute;
+    bottom: 30px;
+    right: 30px;
 }
