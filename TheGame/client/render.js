@@ -7,6 +7,13 @@ var leaderboardNameList = document.getElementById("leaderboardNameList");
 var leaderboardScoreList = document.getElementById("leaderboardScoreList");
 var lbScores = [];
 var lbNames =[];
+var ownNameColor = '#eaaa3a';
+var ownScoreColor = '#eaaa3a';
+var defaultNameColor = '#fff';
+var defaultScoreColor = '#fff';
+
+   
+
 
 var socket = io();
 var hp = 10;
@@ -24,13 +31,15 @@ var killerName = "";
 var killedName = "";
 var killFeedOppacity = 1000;
 
-var playerName = sessionStorage.getItem('tarhely');
 
+
+var playerName = sessionStorage.getItem('tarhely');
+console.log(playerName);
 if (playerName === "")
     {
         playerName = 'unnamed';
     }
-socket.emit('setPlayerName',playerName);
+socket.emit('setPlayerName',playerName.substring(0,12));
 
 socket.on('playerHp',function(data){
 	hp = data;
@@ -76,24 +85,27 @@ socket.on('newPositions',function(data){
 	ctx.clearRect(0,0,800,500);
 
 	for(var i = 0 ; i < data.player.length; i++){
-		ctx.font = '9px Arial'
-		if (data.player[i].number == num){
+        ctx.font = '9px Arial'
+		if (data.player[i].number == num) {
 			ctx.fillStyle = 'green';
 			if (data.player[i].invisible)
 				ctx.fillStyle = 'WhiteSmoke';
 		}else{
 			ctx.fillStyle = 'red';
-			if (data.player[i].invisible){
+			if (data.player[i].invisible) {
 				ctx.fillStyle = 'White';
 				ctx.font = '0px Arial';
 			}
 		}
-			ctx.fillRect(data.player[i].x - (data.player[i].size/2),data.player[i].y- (data.player[i].size/2),data.player[i].size,data.player[i].size)
-			ctx.fillText(data.player[i].name, data.player[i].x-5,data.player[i].y - (data.player[i].size+5));
+			
+            ctx.fillRect(data.player[i].x - (data.player[i].size/2),data.player[i].y- (data.player[i].size/2),data.player[i].size,data.player[i].size);
+        
+			ctx.fillText(data.player[i].name, data.player[i].x-10,data.player[i].y - (data.player[i].size+10));
 
             lbScores.push(data.player[i].score);
             lbNames.push(data.player[i].name);
     }
+    
     sortList();
     lbNames = [];
     lbScores = [];
@@ -191,7 +203,7 @@ document.onmousemove = function(event){
     var html = document.getElementsByTagName("body")[0];
     var style = window.getComputedStyle(html);
     var marginTop = parseInt(style.getPropertyValue('margin-left'),10);
-
+    
 
     // to do
 	var x = event.clientX - marginTop - 1;
@@ -207,32 +219,29 @@ function leaderboardUpdate() {
     leaderboardClear();
     for(i = 0; i < lbScores.length; i++){
 
-    var li = document.createElement("li");
-    li.appendChild(document.createTextNode(lbNames[i]));
+        var li = document.createElement("li");
+        li.appendChild(document.createTextNode(lbNames[i]));
+            if  (lbScores[i] === score && lbNames[i] === playerName)
+                {
+                    li.style.color = ownNameColor;
+                }
+            else {
+                li.style.color = defaultNameColor;
+            }
+        leaderboardNameList.appendChild(li);
+
+        var li2 = document.createElement("li");
+        li2.appendChild(document.createTextNode(lbScores[i]));
         if  (lbScores[i] === score && lbNames[i] === playerName)
-        {
-            li.style.color = '#eaaa3a';
+            {
+                li2.style.color = ownNameColor;
+            }
+        else {
+            li2.style.color = defaultScoreColor;
         }
-    else {
-        li.style.color = '#fff';
+        
+        leaderboardScoreList.appendChild(li2);
     }
-    leaderboardNameList.appendChild(li);
-
-    var li2 = document.createElement("li");
-    li2.appendChild(document.createTextNode(lbScores[i]));
-    if  (lbScores[i] === score && lbNames[i] === playerName)
-        {
-            li2.style.color = '#eaaa3a';
-        }
-    else {
-        li2.style.color = '#fff';
-    }
-    leaderboardScoreList.appendChild(li2);
-
-
-    }
-
-
 }
 
 function leaderboardClear() {
@@ -260,3 +269,4 @@ function sortList() {
         }
     leaderboardUpdate();
 }
+
