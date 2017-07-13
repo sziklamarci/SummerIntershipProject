@@ -105,9 +105,10 @@ body{
     text-decoration: none;
 }
 
-#loginButton  {
+#loginButton,
+#registerButton{
     left: 20px;
-    top: 350px;
+    top: 400px;
     position: absolute;
     background-color: #fff;
     padding: 15px 25px;
@@ -127,7 +128,8 @@ body{
     
 }
 
-#loginButton:hover {
+#loginButton:hover,
+#registerButton:hover{
     color: #fff;
     background-color: #000;
     
@@ -140,7 +142,13 @@ body{
 }
 
 
-#chooseName {
+.{}
+
+#chooseName,
+#choosePass,
+#register_Name,
+#register_Pass,
+#register_Pass2x{
     position: absolute;
     left: 20px;
     top: 300px;
@@ -160,7 +168,33 @@ body{
     border-top-right-radius: 0px;
 }
 
-#chooseName:focus {
+#choosePass,
+#register_Pass,
+#register_Pass2x{
+    position: absolute;
+    left: 20px;
+    top: 350px;
+    box-sizing: border-box;
+    width: 200px;
+    padding: 10px;
+    border-bottom: 3px;
+    border-top: 3px;
+    border-right: 0px;
+    border-left: 0px;
+    border-color: #fff;
+    border-style: solid;
+    transition-duration: 1s;
+   
+    font-family: 'Bangers', cursive;
+    border-bottom-right-radius: 0px;
+    border-top-right-radius: 0px;
+}
+
+#chooseName:focus,
+#choosePass:focus,
+#register_Name:focus,
+#register_Pass:focus,
+#register_Pass2x:focus{
     outline: none;
     border-bottom-right-radius: 0px;
     border-top-right-radius: 0px;
@@ -169,9 +203,7 @@ body{
     border-right: 0px;
     border-left: 0px;
     border-color: #000;
-    border-style: solid;
-    
-    
+    border-style: solid;  
 }
 
 #leaderboardContainer {
@@ -221,4 +253,19 @@ body{
     font-size: 20px;
     width: 20%;
     list-style-type: none;
+}
+
+#register_Name,
+#register_Pass,
+#register_Pass2x,
+#registerButton{
+    left: 600px;
+}
+
+#register_Pass2x{
+    top: 400px;
+}
+
+#registerButton{
+    top: 450px
 }
