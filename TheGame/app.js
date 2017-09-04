@@ -11,12 +11,13 @@ require('./Entity');
 
 var SOCKET_LIST = {};
 
-WIDTH = 800;
-HEIGHT = 500;
+WIDTH = 1300;
+HEIGHT = 600;
 
 var MapChangeTime = 60;
 var MapChangeTimer = 1;
 var Size = 20;
+var assaultgunsound = false;
 
 testCollisionRectRect = function(rect1,rect2){
 	return rect1.x <= rect2.x+rect2.width
@@ -66,6 +67,11 @@ Player.onConnect = function(socket){
 
 	socket.on('setPlayerName',function(data){
 			Player.list[socket.id].name = data;
+			console.log(data);
+	});
+	socket.on('spectator',function(data){
+			Player.list[socket.id].spectator = data;
+			console.log(data);
 	});
 }
 Player.onDisconnect = function(socket){
@@ -74,9 +80,18 @@ Player.onDisconnect = function(socket){
 }
 Player.update = function(){
 	var pack = [];
+	assaultgunsound = false;
+	shotgunsound = false;
 	for(var i in Player.list){
 		var player = Player.list[i];
 		player.update();
+		if(player.type == 0 && player.pressingAttack && player.ammo>0 && !player.dead)
+			assaultgunsound = true;
+		if(player.type == 1 && player.pressingAttack && player.ammo>0 && !player.dead)
+			shotgunsound = true;
+		if(player.spectator=="true")
+			delete Player.list[i];
+		else
 		pack.push({
 			x:player.x,
 			y:player.y,
@@ -161,6 +176,8 @@ setInterval(function(){
 		generateHouse();
 		generateHouse();
 		generateHouse();
+		generateHouse();
+		generateHouse();
 		MapChangeTimer = MapChangeTime;
 	}
 	for (var i in Player.list)
@@ -185,6 +202,8 @@ setInterval(function(){
 	for(var i in SOCKET_LIST){
 		var socket = SOCKET_LIST[i];
 		socket.emit('newPositions',pack);
+		socket.emit('assaultgunsound',assaultgunsound);
+		socket.emit('shotgunsound',shotgunsound);
 		if (newKillFeed){
 			socket.emit('killerName',killerName);
 			socket.emit('killedName',killedName);

@@ -204,6 +204,7 @@ Player = function(id,name){
 	self.score = 0;
 	self.dead = false;
 	self.deadTimer = 5;
+	self.spectator;
 
 
 	var super_update = self.update;
@@ -214,8 +215,11 @@ Player = function(id,name){
 
 		if (self.dead){
 			self.hp = 10;
-			self.x = 2000;
-			self.y = 2000;
+			if(self.type==1){
+				self.hp=15;
+			}
+			self.x = 400000;
+			self.y = 400000;
 			if (self.deadTimer<1){
 				self.x = Math.random()*WIDTH;
 				self.y = Math.random()*HEIGHT;
@@ -224,7 +228,9 @@ Player = function(id,name){
 				self.dead=false;
 			}
 		}
-
+		
+		
+		
 		if (self.stunned){
 			self.maxSpd=0;
 			self.atkTimer--;
@@ -345,6 +351,8 @@ Bullet = function(parent,angle,type,distance){
 	}
 	else if(type == 3){
 		var self = Entity(5);
+		if (distance>500)
+			distance=500;
 		grenadeB(self,distance);
 	}
 	else if(type == 100){
@@ -426,8 +434,8 @@ Bullet = function(parent,angle,type,distance){
 
 	self.shootBullet = function(angle,type){
 		var b = Bullet(self.parent,angle,type,400);
-		b.x = self.x;
-		b.y = self.y;
+		b.x = self.x + b.spdX/2;
+		b.y = self.y + b.spdY/2;
 	}
 
 	Bullet.list[self.id] = self;

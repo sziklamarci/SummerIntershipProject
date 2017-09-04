@@ -12,7 +12,8 @@ var ownScoreColor = '#eaaa3a';
 var defaultNameColor = '#fff';
 var defaultScoreColor = '#fff';
 
-   
+var assaultgunsound = new Audio('assaultgunsound.mp3');   
+var shotgunsound = new Audio('shotgunsound.mp3');   
 
 
 var socket = io();
@@ -34,13 +35,33 @@ var killFeedOppacity = 1000;
 
 
 var playerName = sessionStorage.getItem('tarhely');
+var spectator = sessionStorage.getItem('spectator');
 console.log(playerName);
-if (playerName === "")
+
+if (playerName === "" || playerName === " ")
     {
         playerName = 'unnamed';
     }
 socket.emit('setPlayerName',playerName.substring(0,12));
-
+socket.emit('spectator',spectator);
+/*
+socket.on('assaultgunsound',function(data){
+	if (data==true)
+		assaultgunsound.play();
+	else{
+		assaultgunsound.pause();
+		assaultgunsound.load();
+	}
+});
+socket.on('shotgunsound',function(data){
+	if (data==true)
+		shotgunsound.play();
+	else{
+		shotgunsound.pause();
+		shotgunsound.load();		
+	}
+});
+*/
 socket.on('playerHp',function(data){
 	hp = data;
 });
@@ -82,7 +103,7 @@ socket.on('killedName',function(data){
   killFeedOppacity = 1000;
 });
 socket.on('newPositions',function(data){
-	ctx.clearRect(0,0,800,500);
+	ctx.clearRect(0,0,1300,600);
 
 	for(var i = 0 ; i < data.player.length; i++){
         ctx.font = '9px Arial'
@@ -122,11 +143,11 @@ socket.on('newPositions',function(data){
 
 	ctx.font = '15px Arial';
 	ctx.fillText("HP: " + hp, 5,15);
-	ctx.fillText("Q: " + Math.round(spec1Timer/spec1CD*100) + "%", 80,15);
-	ctx.fillText("E: " + Math.round(spec2Timer/spec2CD*100) + "%", 140,15);
-	ctx.fillText("Time to change: " + TimeToChange, 390,15);
-	ctx.fillText("Ammo: " + ammo, 590, 15);
-	ctx.fillText("score: " + score, 690,15);
+	ctx.fillText("Q: " + Math.round(spec1Timer/spec1CD*100) + "%", 1300/100*15,15);
+	ctx.fillText("E: " + Math.round(spec2Timer/spec2CD*100) + "%", 1300/100*25,15);
+	ctx.fillText("Time to change: " + TimeToChange, 1300/100*45,15);
+	ctx.fillText("Ammo: " + ammo, 1300/100*70, 15);
+	ctx.fillText("score: " + score, 1300/100*90,15);
 
   ctx.fillStyle = "rgba(0, 0, 0,"+ killFeedOppacity/1000 +")";
   if (killerName!=""){
@@ -138,9 +159,9 @@ socket.on('newPositions',function(data){
 
   if(dead){
     ctx.fillStyle = "rgba(0, 0, 0, 0.5)";
-    ctx.fillRect(0,0,800,500);
+    ctx.fillRect(0,0,1300,600);
   	ctx.fillStyle = 'white';
-    ctx.fillText("You died :c respawning in: " + deadTimer + " secs",300,250)
+    ctx.fillText("You died :c respawning in: " + deadTimer + " secs",500,300)
   }
 
 });

@@ -1,17 +1,17 @@
 assaultB = function(self){
-	self.deleteTime = 150;
+	self.deleteTime = 250;
 	self.dmg = 2;
 	self.distance=400;
 	self.color = 'black';
 }
 shotgunB = function(self){
-	self.deleteTime = 150;
+	self.deleteTime = 250;
 	self.dmg = 1;
 	self.distance=400;
 	self.color = 'black';
 }
 minigunB = function(self){
-	self.deleteTime = 200;
+	self.deleteTime = 250;
 	self.dmg = 1;
 	self.distance=400;
 	self.color = 'black';
