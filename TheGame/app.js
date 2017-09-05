@@ -152,7 +152,12 @@ io.sockets.on('connection', function(socket){
 		Player.onDisconnect(socket);
 	});
 	socket.on('sendMsgToServer',function(data){
-		var playerName = Player.list[socket.id].name;
+		try {
+			var playerName = Player.list[socket.id].name;
+		}
+		catch(err){
+			playerName="Spectator";
+		}
 		for(var i in SOCKET_LIST){
 			SOCKET_LIST[i].emit('addToChat',playerName + ': ' + data);
 		}
